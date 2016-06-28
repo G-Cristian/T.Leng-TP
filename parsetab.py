@@ -5,9 +5,9 @@ _tabversion = '3.8'
 
 _lr_method = 'LALR'
 
-_lr_signature = '61E6736523BDE442AFD147A4F6F80290'
+_lr_signature = '9A036C28A6D1368BA4F05A7177C8FA28'
     
-_lr_action_items = {'$end':([7,9,20,],[0,-1,-2,]),'MINUS':([0,2,12,13,15,16,17,18,19,21,22,23,24,25,26,32,33,35,36,37,38,40,42,],[-25,-21,23,-23,-25,-25,-25,-25,-25,-25,-25,-25,34,-25,-22,23,-20,-24,-29,-25,-27,-26,-28,]),'GREATER':([0,2,5,11,12,13,15,16,17,18,19,21,22,23,25,26,29,31,32,33,35,36,37,38,40,42,],[-25,-21,18,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-16,18,-18,-20,-24,-29,-25,-27,-26,-28,]),'AND':([0,1,2,4,5,6,10,11,12,13,15,16,17,18,19,21,22,23,25,26,27,28,29,30,31,32,33,35,36,37,38,39,40,42,],[-25,-9,-21,-11,-15,19,-13,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,19,-12,-16,-8,-14,-18,-20,-24,-29,-25,-27,-10,-26,-28,]),'LESS':([0,2,5,10,11,12,13,15,16,17,18,19,21,22,23,25,26,28,29,31,32,33,35,36,37,38,40,42,],[-25,-21,-15,21,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,21,-16,-14,-18,-20,-24,-29,-25,-27,-26,-28,]),'NOTEQUALS':([0,2,4,5,10,11,12,13,15,16,17,18,19,21,22,23,25,26,28,29,31,32,33,35,36,37,38,39,40,42,],[-25,-21,17,-15,-13,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-12,-16,-14,-18,-20,-24,-29,-25,-27,17,-26,-28,]),'TIMES':([0,2,13,15,16,17,18,19,21,22,23,25,26,33,35,36,37,38,40,42,],[-25,15,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,15,-24,-29,-25,-27,-26,-28,]),'RPAREN':([1,2,3,4,5,6,10,11,12,13,15,16,17,18,19,21,22,23,25,26,27,28,29,30,31,32,33,35,36,37,38,39,40,41,42,],[-9,-21,-5,-11,-15,-7,-13,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-6,-12,-16,-8,-14,-18,-20,-24,-29,-25,-27,-10,-26,42,-28,]),'PLUS':([0,2,11,12,13,15,16,17,18,19,21,22,23,25,26,29,32,33,35,36,37,38,40,42,],[-25,-21,22,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,22,-18,-20,-24,-29,-25,-27,-26,-28,]),'DIV':([0,13,15,16,17,18,19,21,22,23,25,26,35,36,37,38,40,42,],[-25,24,-25,-25,-25,-25,-25,-25,-25,-25,-25,24,-24,-29,-25,-27,-26,-28,]),'EQUALS':([0,1,2,4,5,10,11,12,13,14,15,16,17,18,19,21,22,23,25,26,28,29,30,31,32,33,35,36,37,38,39,40,42,],[-25,14,-21,-11,-15,-13,-17,-19,-23,25,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-12,-16,14,-14,-18,-20,-24,-29,-25,-27,-10,-26,-28,]),'LPAREN':([24,34,],[37,37,]),'SEMICOLON':([0,1,2,3,4,5,6,8,10,11,12,13,15,16,17,18,19,21,22,23,25,26,27,28,29,30,31,32,33,35,36,38,39,40,42,],[-25,-9,-21,-5,-11,-15,-7,20,-13,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-6,-12,-16,-8,-14,-18,-20,-24,-29,-27,-10,-26,-28,]),'NUMBER':([24,34,],[36,36,]),'OR':([0,1,2,3,4,5,6,10,11,12,13,15,16,17,18,19,21,22,23,25,26,27,28,29,30,31,32,33,35,36,37,38,39,40,42,],[-25,-9,-21,16,-11,-15,-7,-13,-17,-19,-23,-25,-25,-25,-25,-25,-25,-25,-25,-25,-22,-6,-12,-16,-8,-14,-18,-20,-24,-29,-25,-27,-10,-26,-28,]),}
+_lr_action_items = {'DOUBLE_AO':([0,2,3,4,6,7,9,11,13,16,],[7,7,-8,-9,11,7,7,-7,7,-10,]),'AO':([0,2,3,4,5,6,7,8,9,10,11,12,13,15,16,],[2,2,-8,-9,-3,-6,2,13,2,-4,-7,-5,2,-2,-10,]),'RPAREN':([3,4,5,6,8,10,11,12,14,15,16,],[-8,-9,-3,-6,-1,-4,-7,-5,16,-2,-10,]),'NUMBER':([0,2,7,9,13,],[4,4,4,4,4,]),'$end':([1,3,4,5,6,8,10,11,12,15,16,],[0,-8,-9,-3,-6,-1,-4,-7,-5,-2,-10,]),'LPAREN':([0,2,7,9,13,],[9,9,9,9,9,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[7,]),'eqeqExpression':([0,16,19,37,],[1,1,30,1,]),'orExpression':([0,37,],[3,3,]),'plusExpression':([0,16,17,18,19,21,25,37,],[11,11,11,29,11,11,11,11,]),'noteqExpression':([0,16,19,25,37,],[4,4,4,39,4,]),'divExpression':([0,15,16,17,18,19,21,22,23,25,37,],[13,26,13,13,13,13,13,13,13,13,13,]),'timesExpression':([0,16,17,18,19,21,22,23,25,37,],[2,2,2,2,2,2,2,33,2,2,]),'expression':([0,37,],[8,41,]),'expressionStatement':([0,],[9,]),'lessExpression':([0,16,17,19,25,37,],[10,10,28,10,10,10,]),'unaryMinusExpression':([24,],[35,]),'greaterExpression':([0,16,17,19,21,25,37,],[5,5,5,5,31,5,5,]),'factorExpression':([24,34,],[38,40,]),'minusExpression':([0,16,17,18,19,21,22,25,37,],[12,12,12,12,12,12,32,12,12,]),'andExpression':([0,16,37,],[6,27,6,]),}
+_lr_goto_items = {'expression':([0,9,],[1,14,]),'unaryExp':([0,2,7,9,13,],[5,10,12,5,15,]),'unaryExp2':([0,2,7,9,13,],[6,6,6,6,6,]),'factorExp':([0,2,7,9,13,],[3,3,3,3,3,]),'aritExp':([0,9,],[8,8,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -25,34 +25,15 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> statement","S'",1,None,None,None),
-  ('statement -> expressionStatement','statement',1,'p_statement_expression','parser_rules.py',24),
-  ('expressionStatement -> expression SEMICOLON','expressionStatement',2,'p_expressionStatement','parser_rules.py',33),
-  ('statements -> statement statements','statements',2,'p_statements','parser_rules.py',37),
-  ('statements -> <empty>','statements',0,'p_statements_empty','parser_rules.py',41),
-  ('expression -> orExpression','expression',1,'p_expression','parser_rules.py',46),
-  ('orExpression -> orExpression OR andExpression','orExpression',3,'p_orExpression','parser_rules.py',50),
-  ('orExpression -> andExpression','orExpression',1,'p_orExpression_and','parser_rules.py',59),
-  ('andExpression -> andExpression AND eqeqExpression','andExpression',3,'p_andExpression','parser_rules.py',63),
-  ('andExpression -> eqeqExpression','andExpression',1,'p_andExpression_eqeq','parser_rules.py',72),
-  ('eqeqExpression -> eqeqExpression EQUALS EQUALS noteqExpression','eqeqExpression',4,'p_eqeqExpression','parser_rules.py',76),
-  ('eqeqExpression -> noteqExpression','eqeqExpression',1,'p_eqeqExpression_not','parser_rules.py',85),
-  ('noteqExpression -> noteqExpression NOTEQUALS lessExpression','noteqExpression',3,'p_noteqExpression','parser_rules.py',90),
-  ('noteqExpression -> lessExpression','noteqExpression',1,'p_noteqExpression_less','parser_rules.py',99),
-  ('lessExpression -> lessExpression LESS greaterExpression','lessExpression',3,'p_lessExpression','parser_rules.py',103),
-  ('lessExpression -> greaterExpression','lessExpression',1,'p_lessExpression_greater','parser_rules.py',112),
-  ('greaterExpression -> greaterExpression GREATER plusExpression','greaterExpression',3,'p_greaterExpression','parser_rules.py',116),
-  ('greaterExpression -> plusExpression','greaterExpression',1,'p_greaterExpression_plus','parser_rules.py',125),
-  ('plusExpression -> plusExpression PLUS minusExpression','plusExpression',3,'p_plusExpression','parser_rules.py',129),
-  ('plusExpression -> minusExpression','plusExpression',1,'p_plusExpression_minus','parser_rules.py',141),
-  ('minusExpression -> minusExpression MINUS timesExpression','minusExpression',3,'p_minusExpression','parser_rules.py',145),
-  ('minusExpression -> timesExpression','minusExpression',1,'p_minusExpression_times','parser_rules.py',157),
-  ('timesExpression -> timesExpression TIMES divExpression','timesExpression',3,'p_timesExpression','parser_rules.py',161),
-  ('timesExpression -> divExpression','timesExpression',1,'p_timesExpression_div','parser_rules.py',173),
-  ('divExpression -> divExpression DIV unaryMinusExpression','divExpression',3,'p_divExpression','parser_rules.py',177),
-  ('divExpression -> <empty>','divExpression',0,'p_divExpression_unaryMinus','parser_rules.py',189),
-  ('unaryMinusExpression -> MINUS factorExpression','unaryMinusExpression',2,'p_unaryMinusExpression','parser_rules.py',193),
-  ('unaryMinusExpression -> factorExpression','unaryMinusExpression',1,'p_unaryMinusExpression_factor','parser_rules.py',203),
-  ('factorExpression -> LPAREN expression RPAREN','factorExpression',3,'p_factorExpression_paren','parser_rules.py',207),
-  ('factorExpression -> NUMBER','factorExpression',1,'p_factorExpression','parser_rules.py',213),
+  ("S' -> expression","S'",1,None,None,None),
+  ('expression -> aritExp','expression',1,'p_expression','parser_rules_v2.py',6),
+  ('aritExp -> aritExp AO unaryExp','aritExp',3,'p_aritExp','parser_rules_v2.py',11),
+  ('aritExp -> unaryExp','aritExp',1,'p_aritExp_unary','parser_rules_v2.py',24),
+  ('unaryExp -> AO unaryExp','unaryExp',2,'p_unaryExp','parser_rules_v2.py',28),
+  ('unaryExp -> DOUBLE_AO unaryExp','unaryExp',2,'p_unaryExp_double','parser_rules_v2.py',42),
+  ('unaryExp -> unaryExp2','unaryExp',1,'p_unaryExp_double_unaryExp2','parser_rules_v2.py',52),
+  ('unaryExp2 -> unaryExp2 DOUBLE_AO','unaryExp2',2,'p_unaryExp_double2','parser_rules_v2.py',56),
+  ('unaryExp2 -> factorExp','unaryExp2',1,'p_unaryExp2_factor','parser_rules_v2.py',66),
+  ('factorExp -> NUMBER','factorExp',1,'p_factorExp','parser_rules_v2.py',70),
+  ('factorExp -> LPAREN expression RPAREN','factorExp',3,'p_factorExp_paren','parser_rules_v2.py',74),
 ]
