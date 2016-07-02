@@ -1,37 +1,75 @@
 tokens = [
-    #aritmeticos
+    # aritmeticos
     'AO',
-    #++/--
+    # ++/--
     'DOUBLE_AO',
-    #parentesis
+    # asignacion
+    'EQUAL',
+    # comparacion
+    'COMP',
+    # parentesis
     'LPAREN',
     'RPAREN',
-    #puntuacion
-    'SEMICOLON',
+    # corchetes
+    'LBRACKET',
+    'RBRACKET',
+    # llaves
+    'LBRACES',
+    'RBRACES',
+    # puntuacion
     'COMMA',
     'DOT',
-    #Comentario
+    'COLON',
+    'SEMICOLON',
+    # Comentario
     'COMMENT',
-    #Number,
-    'NUMBER'
+    # Number,
+    'NUMBER',
+    # Cadenas
+    'STRING',
+    # variables
+    'VAR',
+    # funciones
+    'MULTIPLICACIONESCALAR',
+    'CAPITALIZAR',
+    'COLINEALES',
+    'PRINT',
+    'LENGTH',
+    # condicional
+    'IF',
+    # bucles
+    'FOR',
+    'WHILE',
+    'DO'
 ]
 
-t_AO = r"[\+\-\*/]"
-t_DOUBLE_AO = r"\+\+ | \-\-"
+t_AO = r"[\+\-\*/\^%]"
+t_DOUBLE_AO = r"\+\+|\-\-"
+t_EQUAL = "="
+t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
 t_RPAREN = r"\)"
-t_SEMICOLON = r";"
-t_COMMA = r","
+t_LBRACKETS = r"\["
+t_RBRACKETS = r"\]"
+t_LBRACES = r"\{"
+t_RBRACES = r"\}"
+t_COMMA = ","
 t_DOT = r"\."
+t_COLON = ":"
+t_SEMICOLON = ";"
+
+t_VAR = r"[_a-zA-Z][_a-zA-Z0-9]*"
+t_MULTIPLICACIONESCALAR = "multiplicacionEscalar"
+t_CAPITALIZAR = "capitalizar"
+t_COLINEALES = "colineales"
+t_PRINT = "print"
+t_LENGTH = "length"
+t_IF = "if"
+t_FOR = "for"
+t_WHILE = "while"
+t_DO = "do"
 
 types = set(['int', 'float'])
-
-def t_ID(token):
-    r"[_a-zA-Z][_a-zA-Z0-9]*"
-    if token.value in types:
-        token.type = 'TYPE'
-    return token
-
 
 def t_NUMBER(token):
     r"[0-9]+(\.[0-9]+)?"
@@ -43,6 +81,13 @@ def t_NUMBER(token):
         number_value = int(token.value)
     token.value = {"value": number_value, "type": number_type, "line":token.lexer.lineno}
     return token
+
+def t_STRING(token):
+    r"\".*\""
+    token.value = token.value[1:-1]
+
+def t_VECTOR(token):
+    r"\[\]"
 
 def t_NEWLINE(token):
 	r"\n+"
