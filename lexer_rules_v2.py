@@ -50,7 +50,7 @@ def t_NEWLINE(token):
 
 def t_COMMENT(token):
 	r"\#.*"
-	token.value = token.value.strip()
+	token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
 	return token
 
 t_ignore = " \t"

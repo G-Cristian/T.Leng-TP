@@ -5,9 +5,9 @@ _tabversion = '3.8'
 
 _lr_method = 'LALR'
 
-_lr_signature = '9A036C28A6D1368BA4F05A7177C8FA28'
+_lr_signature = '81FA02A5247EE1F67237BE2BBA67969B'
     
-_lr_action_items = {'DOUBLE_AO':([0,2,3,4,6,7,9,11,13,16,],[7,7,-8,-9,11,7,7,-7,7,-10,]),'AO':([0,2,3,4,5,6,7,8,9,10,11,12,13,15,16,],[2,2,-8,-9,-3,-6,2,13,2,-4,-7,-5,2,-2,-10,]),'RPAREN':([3,4,5,6,8,10,11,12,14,15,16,],[-8,-9,-3,-6,-1,-4,-7,-5,16,-2,-10,]),'NUMBER':([0,2,7,9,13,],[4,4,4,4,4,]),'$end':([1,3,4,5,6,8,10,11,12,15,16,],[0,-8,-9,-3,-6,-1,-4,-7,-5,-2,-10,]),'LPAREN':([0,2,7,9,13,],[9,9,9,9,9,]),}
+_lr_action_items = {'DOUBLE_AO':([0,1,3,5,6,8,10,11,12,14,17,18,20,23,24,25,],[1,1,1,-14,18,1,-17,1,1,-13,-17,-12,-16,1,-5,-15,]),'$end':([0,2,7,10,11,12,17,20,21,22,24,],[-4,0,-2,-17,-4,-4,-17,-16,-3,-1,-5,]),'LPAREN':([0,1,3,8,10,11,12,17,20,23,24,],[8,8,8,8,-17,8,8,-17,-16,8,-5,]),'SEMICOLON':([4,5,6,9,13,14,15,16,18,25,26,],[17,-14,-11,-8,-6,-13,-10,-9,-12,-15,-7,]),'AO':([0,1,3,5,6,8,9,10,11,12,13,14,15,16,17,18,20,23,24,25,26,],[3,3,3,-14,-11,3,-8,-17,3,3,23,-13,-10,-9,-17,-12,-16,3,-5,-15,-7,]),'COMMENT':([0,10,17,],[10,10,10,]),'RPAREN':([5,6,9,13,14,15,16,18,19,25,26,],[-14,-11,-8,-6,-13,-10,-9,-12,25,-15,-7,]),'NUMBER':([0,1,3,8,10,11,12,17,20,23,24,],[5,5,5,5,-17,5,5,-17,-16,5,-5,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,9,],[1,14,]),'unaryExp':([0,2,7,9,13,],[5,10,12,5,15,]),'unaryExp2':([0,2,7,9,13,],[6,6,6,6,6,]),'factorExp':([0,2,7,9,13,],[3,3,3,3,3,]),'aritExp':([0,9,],[8,8,]),}
+_lr_goto_items = {'codeIni':([0,],[2,]),'unaryExp2':([0,1,3,8,11,12,23,],[6,6,6,6,6,6,6,]),'unaryExp':([0,1,3,8,11,12,23,],[9,15,16,9,9,9,26,]),'statement':([0,11,12,],[11,11,11,]),'expression':([0,8,11,12,],[4,19,4,4,]),'comments':([0,10,17,],[12,20,24,]),'code':([0,11,12,],[7,21,22,]),'factorExp':([0,1,3,8,11,12,23,],[14,14,14,14,14,14,14,]),'aritExp':([0,8,11,12,],[13,13,13,13,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -25,15 +25,22 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> aritExp','expression',1,'p_expression','parser_rules_v2.py',6),
-  ('aritExp -> aritExp AO unaryExp','aritExp',3,'p_aritExp','parser_rules_v2.py',11),
-  ('aritExp -> unaryExp','aritExp',1,'p_aritExp_unary','parser_rules_v2.py',24),
-  ('unaryExp -> AO unaryExp','unaryExp',2,'p_unaryExp','parser_rules_v2.py',28),
-  ('unaryExp -> DOUBLE_AO unaryExp','unaryExp',2,'p_unaryExp_double','parser_rules_v2.py',42),
-  ('unaryExp -> unaryExp2','unaryExp',1,'p_unaryExp_double_unaryExp2','parser_rules_v2.py',52),
-  ('unaryExp2 -> unaryExp2 DOUBLE_AO','unaryExp2',2,'p_unaryExp_double2','parser_rules_v2.py',56),
-  ('unaryExp2 -> factorExp','unaryExp2',1,'p_unaryExp2_factor','parser_rules_v2.py',66),
-  ('factorExp -> NUMBER','factorExp',1,'p_factorExp','parser_rules_v2.py',70),
-  ('factorExp -> LPAREN expression RPAREN','factorExp',3,'p_factorExp_paren','parser_rules_v2.py',74),
+  ("S' -> codeIni","S'",1,None,None,None),
+  ('codeIni -> comments code','codeIni',2,'p_codeIni1','parser_rules_v2.py',10),
+  ('codeIni -> code','codeIni',1,'p_codeIni2','parser_rules_v2.py',16),
+  ('code -> statement code','code',2,'p_code','parser_rules_v2.py',23),
+  ('code -> <empty>','code',0,'p_code_empty','parser_rules_v2.py',29),
+  ('statement -> expression SEMICOLON comments','statement',3,'p_statement_1','parser_rules_v2.py',33),
+  ('expression -> aritExp','expression',1,'p_expression','parser_rules_v2.py',40),
+  ('aritExp -> aritExp AO unaryExp','aritExp',3,'p_aritExp','parser_rules_v2.py',45),
+  ('aritExp -> unaryExp','aritExp',1,'p_aritExp_unary','parser_rules_v2.py',58),
+  ('unaryExp -> AO unaryExp','unaryExp',2,'p_unaryExp','parser_rules_v2.py',62),
+  ('unaryExp -> DOUBLE_AO unaryExp','unaryExp',2,'p_unaryExp_double','parser_rules_v2.py',76),
+  ('unaryExp -> unaryExp2','unaryExp',1,'p_unaryExp_double_unaryExp2','parser_rules_v2.py',86),
+  ('unaryExp2 -> unaryExp2 DOUBLE_AO','unaryExp2',2,'p_unaryExp_double2','parser_rules_v2.py',90),
+  ('unaryExp2 -> factorExp','unaryExp2',1,'p_unaryExp2_factor','parser_rules_v2.py',100),
+  ('factorExp -> NUMBER','factorExp',1,'p_factorExp','parser_rules_v2.py',104),
+  ('factorExp -> LPAREN expression RPAREN','factorExp',3,'p_factorExp_paren','parser_rules_v2.py',108),
+  ('comments -> COMMENT comments','comments',2,'p_comments','parser_rules_v2.py',115),
+  ('comments -> <empty>','comments',0,'p_comments_empty','parser_rules_v2.py',119),
 ]

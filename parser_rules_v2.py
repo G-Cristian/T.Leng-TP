@@ -1,6 +1,40 @@
 from lexer_rules_v2 import tokens
 from expressions_v2 import *
 
+#codeIni va aca arriba para que sea el primero de la produccion
+
+#code & statements
+#La idea de codeIni es que puede empezar con comentarios o no. Despues sigue un codigo que no empieza con comentarios
+#Esto se usa para el inicio del programa y para el inicio de cada bloque
+def p_codeIni1(se):
+        'codeIni : comments code'
+        ex1 = se[1]
+        ex2 = se[2]
+        se[0] = InitialCodeNode(ex1, ex2, ex1.line)
+        
+def p_codeIni2(se):
+        'codeIni : code'
+        ex1 = se[1]
+        se[0] = InitialCodeNode(EmptyNode(), ex1, ex1.line)
+        
+#En este se llama a un statement y luego más codigo
+#Notar el statement permite poner comentarios al finalizar el statement
+def p_code(se):
+        'code : statement code'
+        ex1 = se[1]
+        ex2 = se[2]
+        se[0] = CodeNode(ex1, ex2, ex1.line)
+
+def p_code_empty(se):
+        'code : '
+        se[0] = EmptyNode()
+#statements
+def p_statement_1(se):
+        'statement : expression SEMICOLON comments'
+        ex1 = se[1]
+        ex2 = se[3]
+        se[0] = ExpressionStatementNode(ex1, ex2, ex1.line)
+
 #Expresiones
 def p_expression(se):
         'expression : aritExp'
@@ -74,6 +108,17 @@ def p_factorExp_paren(se):
         'factorExp : LPAREN expression RPAREN'
         ex1 = se[2]
         se[0] = ParenOperationNode(ex1, ex1.type, ex1.line)
+
+
+#comments
+def p_comments(se):
+        'comments : COMMENT comments'
+        se[0] = CommentNode(se[1]["value"], se[2] ,se[1]["line"])
+
+def p_comments_empty(se):
+        'comments : '
+        se[0] = EmptyNode()
+
 
 def isNumeric(nType):
         return nType == "float" or nType == "int"
