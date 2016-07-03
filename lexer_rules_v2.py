@@ -14,8 +14,8 @@ tokens = [
     'LBRACKET',
     'RBRACKET',
     # llaves
-    'LBRACES',
-    'RBRACES',
+    'LBRACE',
+    'RBRACE',
     # puntuacion
     'COMMA',
     'DOT',
@@ -49,10 +49,10 @@ t_EQUAL = "="
 t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
 t_RPAREN = r"\)"
-t_LBRACKETS = r"\["
-t_RBRACKETS = r"\]"
-t_LBRACES = r"\{"
-t_RBRACES = r"\}"
+t_LBRACKET = r"\["
+t_RBRACKET = r"]"
+t_LBRACE = r"\{"
+t_RBRACE = r"}"
 t_COMMA = ","
 t_DOT = r"\."
 t_COLON = ":"
@@ -86,8 +86,6 @@ def t_STRING(token):
     r"\".*\""
     token.value = token.value[1:-1]
 
-def t_VECTOR(token):
-    r"\[\]"
 
 def t_NEWLINE(token):
 	r"\n+"
@@ -99,7 +97,6 @@ def t_COMMENT(token):
 	return token
 
 t_ignore = " \t"
-
 
 def t_error(token):
     message = "Token desconocido:"

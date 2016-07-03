@@ -11,13 +11,13 @@ def p_codeIni1(se):
         ex1 = se[1]
         ex2 = se[2]
         se[0] = InitialCodeNode(ex1, ex2, ex1.line)
-        
+
 def p_codeIni2(se):
         'codeIni : code'
         ex1 = se[1]
         se[0] = InitialCodeNode(EmptyNode(), ex1, ex1.line)
-        
-#En este se llama a un statement y luego más codigo
+
+#En este se llama a un statement y luego mas codigo
 #Notar el statement permite poner comentarios al finalizar el statement
 def p_code(se):
         'code : statement code'
@@ -70,7 +70,7 @@ def p_unaryExp(se):
                         se[0] = UnaryOperationNode(ex1, op, ntype, ex1.line, True)
                 else:
                         raise Exception("Error de tipos en operador aritmetico unario")
-                        
+
 
 def p_unaryExp_double(se):
         'unaryExp : DOUBLE_AO unaryExp'
