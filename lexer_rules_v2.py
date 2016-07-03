@@ -1,3 +1,4 @@
+import pdb
 tokens = [
     # aritmeticos
     'AO',
@@ -27,8 +28,6 @@ tokens = [
     'NUMBER',
     # Cadenas
     'STRING',
-    # variables
-    'VAR',
     # funciones
     'MULTIPLICACIONESCALAR',
     'CAPITALIZAR',
@@ -37,10 +36,18 @@ tokens = [
     'LENGTH',
     # condicional
     'IF',
+    'ELSE',
     # bucles
     'FOR',
     'WHILE',
-    'DO'
+    'DO',
+    # booleans
+    'TRUE',
+    'FALSE',
+    'BOOL_OP',
+    'NOT',
+    # variables
+    'VAR'
 ]
 
 t_AO = r"[\+\-\*/\^%]"
@@ -58,18 +65,32 @@ t_DOT = r"\."
 t_COLON = ":"
 t_SEMICOLON = ";"
 
-t_VAR = r"[_a-zA-Z][_a-zA-Z0-9]*"
 t_MULTIPLICACIONESCALAR = "multiplicacionEscalar"
 t_CAPITALIZAR = "capitalizar"
 t_COLINEALES = "colineales"
 t_PRINT = "print"
 t_LENGTH = "length"
 t_IF = "if"
+t_ELSE = "else"
 t_FOR = "for"
 t_WHILE = "while"
 t_DO = "do"
 
+t_BOOL_OP = r"AND|OR"
+t_NOT = 'NOT'
+
+
 types = set(['int', 'float'])
+
+def t_TRUE(token):
+    "true"
+    token.value = {"value": token.value, "line": token.lexer.lineno}
+    return token
+
+def t_FALSE(token):
+    "false"
+    token.value = {"value": token.value, "line": token.lexer.lineno}
+    return token
 
 def t_NUMBER(token):
     r"[0-9]+(\.[0-9]+)?"
@@ -88,14 +109,17 @@ def t_STRING(token):
 
 
 def t_NEWLINE(token):
-	r"\n+"
-	token.lexer.lineno += len(token.value)
+    r"\n+"
+    token.lexer.lineno += len(token.value)
 
 def t_COMMENT(token):
-	r"\#.*"
-	token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
-	return token
+    r"\#.*"
+    # token.value = token.value.strip()
+    # token.line = token.lexer.lineno
+    token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
+    return token
 
+# t_VAR = r"[_a-zA-Z][_a-zA-Z0-9]*"
 t_ignore = " \t"
 
 def t_error(token):

@@ -5,9 +5,9 @@ _tabversion = '3.8'
 
 _lr_method = 'LALR'
 
-_lr_signature = '81FA02A5247EE1F67237BE2BBA67969B'
+_lr_signature = '32FF9EB03DE6940164182BAF2FB4F5FD'
     
-_lr_action_items = {'DOUBLE_AO':([0,1,3,5,6,8,10,11,12,14,17,18,20,23,24,25,],[1,1,1,-14,18,1,-17,1,1,-13,-17,-12,-16,1,-5,-15,]),'$end':([0,2,7,10,11,12,17,20,21,22,24,],[-4,0,-2,-17,-4,-4,-17,-16,-3,-1,-5,]),'LPAREN':([0,1,3,8,10,11,12,17,20,23,24,],[8,8,8,8,-17,8,8,-17,-16,8,-5,]),'SEMICOLON':([4,5,6,9,13,14,15,16,18,25,26,],[17,-14,-11,-8,-6,-13,-10,-9,-12,-15,-7,]),'AO':([0,1,3,5,6,8,9,10,11,12,13,14,15,16,17,18,20,23,24,25,26,],[3,3,3,-14,-11,3,-8,-17,3,3,23,-13,-10,-9,-17,-12,-16,3,-5,-15,-7,]),'COMMENT':([0,10,17,],[10,10,10,]),'RPAREN':([5,6,9,13,14,15,16,18,19,25,26,],[-14,-11,-8,-6,-13,-10,-9,-12,25,-15,-7,]),'NUMBER':([0,1,3,8,10,11,12,17,20,23,24,],[5,5,5,5,-17,5,5,-17,-16,5,-5,]),}
+_lr_action_items = {'COMMENT':([0,4,5,8,27,32,34,35,36,37,40,41,42,43,],[5,-5,5,5,-20,-4,-26,5,-26,-23,-22,-25,-24,-21,]),'DOUBLE_AO':([0,2,4,5,6,8,9,10,11,15,24,26,27,29,32,33,34,35,36,37,38,40,41,42,43,],[6,-15,-5,6,6,6,6,6,-14,26,6,-13,-20,-16,-4,6,-26,6,-26,-23,6,-22,-25,-24,-21,]),'FALSE':([0,4,5,8,10,20,25,27,32,33,34,35,36,37,38,40,41,42,43,],[14,-5,14,14,14,14,14,-20,-4,14,-26,14,-26,-23,14,-22,-25,-24,-21,]),'RBRACE':([4,5,8,18,21,27,32,34,35,36,37,39,40,41,42,43,],[-5,-3,-3,-2,-1,-20,-4,-26,-3,-26,-23,43,-22,-25,-24,-21,]),'SEMICOLON':([2,3,7,11,12,14,15,16,17,19,22,26,28,29,30,],[-15,-17,-7,-14,-6,-18,-12,-9,27,-11,-10,-13,-19,-16,-8,]),'NUMBER':([0,4,5,6,8,9,10,24,27,32,33,34,35,36,37,38,40,41,42,43,],[2,-5,2,2,2,2,2,2,-20,-4,2,-26,2,-26,-23,2,-22,-25,-24,-21,]),'AO':([0,2,4,5,6,8,9,10,11,12,15,16,19,22,24,26,27,29,30,32,33,34,35,36,37,38,40,41,42,43,],[9,-15,-5,9,9,9,9,9,-14,24,-12,-9,-11,-10,9,-13,-20,-16,-8,-4,9,-26,9,-26,-23,9,-22,-25,-24,-21,]),'ELSE':([4,27,32,34,36,37,40,41,42,43,],[-5,-20,-4,38,38,-23,-22,-25,-24,-21,]),'BOOL_OP':([3,7,14,28,31,],[-17,20,-18,20,20,]),'LBRACE':([33,38,],[35,35,]),'LPAREN':([0,4,5,6,8,9,10,13,24,27,32,33,34,35,36,37,38,40,41,42,43,],[10,-5,10,10,10,10,10,25,10,-20,-4,10,-26,10,-26,-23,10,-22,-25,-24,-21,]),'RPAREN':([2,3,7,11,12,14,15,16,19,22,23,26,28,29,30,31,],[-15,-17,-7,-14,-6,-18,-12,-9,-11,-10,29,-13,-19,-16,-8,33,]),'IF':([0,4,5,8,27,32,33,34,35,36,37,38,40,41,42,43,],[13,-5,13,13,-20,-4,13,-26,13,-26,-23,13,-22,-25,-24,-21,]),'TRUE':([0,4,5,8,10,20,25,27,32,33,34,35,36,37,38,40,41,42,43,],[3,-5,3,3,3,3,3,-20,-4,3,-26,3,-26,-23,3,-22,-25,-24,-21,]),'$end':([0,1,4,5,8,18,21,27,32,34,36,37,40,41,42,43,],[-3,0,-5,-3,-3,-2,-1,-20,-4,-26,-26,-23,-22,-25,-24,-21,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'codeIni':([0,],[2,]),'unaryExp2':([0,1,3,8,11,12,23,],[6,6,6,6,6,6,6,]),'unaryExp':([0,1,3,8,11,12,23,],[9,15,16,9,9,9,26,]),'statement':([0,11,12,],[11,11,11,]),'expression':([0,8,11,12,],[4,19,4,4,]),'comments':([0,10,17,],[12,20,24,]),'code':([0,11,12,],[7,21,22,]),'factorExp':([0,1,3,8,11,12,23,],[14,14,14,14,14,14,14,]),'aritExp':([0,8,11,12,],[13,13,13,13,]),}
+_lr_goto_items = {'code':([0,5,8,35,],[1,18,21,39,]),'expression':([0,5,8,10,33,35,38,],[17,17,17,23,17,17,17,]),'unaryExp2':([0,5,6,8,9,10,24,33,35,38,],[15,15,15,15,15,15,15,15,15,15,]),'comments':([27,],[32,]),'else':([34,36,],[37,40,]),'bool':([0,5,8,10,20,25,33,35,38,],[7,7,7,7,28,31,7,7,7,]),'statement':([0,5,8,33,35,38,],[8,8,8,34,8,41,]),'factorExp':([0,5,6,8,9,10,24,33,35,38,],[11,11,11,11,11,11,11,11,11,11,]),'unaryExp':([0,5,6,8,9,10,24,33,35,38,],[16,16,19,16,22,16,30,16,16,16,]),'aritExp':([0,5,8,10,33,35,38,],[12,12,12,12,12,12,12,]),'block':([33,38,],[36,42,]),'if':([0,5,8,33,35,38,],[4,4,4,4,4,4,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -25,22 +25,31 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> codeIni","S'",1,None,None,None),
-  ('codeIni -> comments code','codeIni',2,'p_codeIni1','parser_rules_v2.py',10),
-  ('codeIni -> code','codeIni',1,'p_codeIni2','parser_rules_v2.py',16),
-  ('code -> statement code','code',2,'p_code','parser_rules_v2.py',23),
-  ('code -> <empty>','code',0,'p_code_empty','parser_rules_v2.py',29),
-  ('statement -> expression SEMICOLON comments','statement',3,'p_statement_1','parser_rules_v2.py',33),
-  ('expression -> aritExp','expression',1,'p_expression','parser_rules_v2.py',40),
-  ('aritExp -> aritExp AO unaryExp','aritExp',3,'p_aritExp','parser_rules_v2.py',45),
-  ('aritExp -> unaryExp','aritExp',1,'p_aritExp_unary','parser_rules_v2.py',58),
-  ('unaryExp -> AO unaryExp','unaryExp',2,'p_unaryExp','parser_rules_v2.py',62),
-  ('unaryExp -> DOUBLE_AO unaryExp','unaryExp',2,'p_unaryExp_double','parser_rules_v2.py',76),
-  ('unaryExp -> unaryExp2','unaryExp',1,'p_unaryExp_double_unaryExp2','parser_rules_v2.py',86),
-  ('unaryExp2 -> unaryExp2 DOUBLE_AO','unaryExp2',2,'p_unaryExp_double2','parser_rules_v2.py',90),
-  ('unaryExp2 -> factorExp','unaryExp2',1,'p_unaryExp2_factor','parser_rules_v2.py',100),
-  ('factorExp -> NUMBER','factorExp',1,'p_factorExp','parser_rules_v2.py',104),
-  ('factorExp -> LPAREN expression RPAREN','factorExp',3,'p_factorExp_paren','parser_rules_v2.py',108),
-  ('comments -> COMMENT comments','comments',2,'p_comments','parser_rules_v2.py',115),
-  ('comments -> <empty>','comments',0,'p_comments_empty','parser_rules_v2.py',119),
+  ("S' -> code","S'",1,None,None,None),
+  ('code -> statement code','code',2,'p_code_statement','parser_rules_v2.py',11),
+  ('code -> COMMENT code','code',2,'p_code_comment','parser_rules_v2.py',17),
+  ('code -> <empty>','code',0,'p_code_empty','parser_rules_v2.py',23),
+  ('statement -> expression SEMICOLON comments','statement',3,'p_statement_1','parser_rules_v2.py',27),
+  ('statement -> if','statement',1,'p_statement_if','parser_rules_v2.py',33),
+  ('expression -> aritExp','expression',1,'p_expression_aritmethic','parser_rules_v2.py',47),
+  ('expression -> bool','expression',1,'p_expression_boolean','parser_rules_v2.py',51),
+  ('aritExp -> aritExp AO unaryExp','aritExp',3,'p_aritExp','parser_rules_v2.py',56),
+  ('aritExp -> unaryExp','aritExp',1,'p_aritExp_unary','parser_rules_v2.py',69),
+  ('unaryExp -> AO unaryExp','unaryExp',2,'p_unaryExp','parser_rules_v2.py',73),
+  ('unaryExp -> DOUBLE_AO unaryExp','unaryExp',2,'p_unaryExp_double','parser_rules_v2.py',87),
+  ('unaryExp -> unaryExp2','unaryExp',1,'p_unaryExp_double_unaryExp2','parser_rules_v2.py',97),
+  ('unaryExp2 -> unaryExp2 DOUBLE_AO','unaryExp2',2,'p_unaryExp_double2','parser_rules_v2.py',101),
+  ('unaryExp2 -> factorExp','unaryExp2',1,'p_unaryExp2_factor','parser_rules_v2.py',111),
+  ('factorExp -> NUMBER','factorExp',1,'p_factorExp','parser_rules_v2.py',115),
+  ('factorExp -> LPAREN expression RPAREN','factorExp',3,'p_factorExp_paren','parser_rules_v2.py',119),
+  ('bool -> TRUE','bool',1,'p_bool_true','parser_rules_v2.py',125),
+  ('bool -> FALSE','bool',1,'p_bool_false','parser_rules_v2.py',129),
+  ('bool -> bool BOOL_OP bool','bool',3,'p_bool_op','parser_rules_v2.py',133),
+  ('comments -> <empty>','comments',0,'p_comments_empty','parser_rules_v2.py',146),
+  ('block -> LBRACE code RBRACE','block',3,'p_block','parser_rules_v2.py',151),
+  ('if -> IF LPAREN bool RPAREN block else','if',6,'p_if_with_block','parser_rules_v2.py',157),
+  ('if -> IF LPAREN bool RPAREN statement else','if',6,'p_if_with_statement','parser_rules_v2.py',164),
+  ('else -> ELSE block','else',2,'p_else_with_block','parser_rules_v2.py',171),
+  ('else -> ELSE statement','else',2,'p_else_with_statement','parser_rules_v2.py',175),
+  ('else -> <empty>','else',0,'p_else_empty','parser_rules_v2.py',179),
 ]

@@ -4,26 +4,20 @@ from expressions_v2 import *
 #codeIni va aca arriba para que sea el primero de la produccion
 
 #code & statements
-#La idea de codeIni es que puede empezar con comentarios o no. Despues sigue un codigo que no empieza con comentarios
-#Esto se usa para el inicio del programa y para el inicio de cada bloque
-def p_codeIni1(se):
-        'codeIni : comments code'
-        ex1 = se[1]
-        ex2 = se[2]
-        se[0] = InitialCodeNode(ex1, ex2, ex1.line)
-
-def p_codeIni2(se):
-        'codeIni : code'
-        ex1 = se[1]
-        se[0] = InitialCodeNode(EmptyNode(), ex1, ex1.line)
 
 #En este se llama a un statement y luego mas codigo
 #Notar el statement permite poner comentarios al finalizar el statement
-def p_code(se):
+def p_code_statement(se):
         'code : statement code'
         ex1 = se[1]
         ex2 = se[2]
         se[0] = CodeNode(ex1, ex2, ex1.line)
+
+def p_code_comment(se):
+        'code : COMMENT code'
+        ex1 = se[1]
+        ex2 = se[2]
+        se[0] = CommentNode(ex1["value"], ex2, ex1["line"])
 
 def p_code_empty(se):
         'code : '
@@ -35,9 +29,26 @@ def p_statement_1(se):
         ex2 = se[3]
         se[0] = ExpressionStatementNode(ex1, ex2, ex1.line)
 
+def p_statement_if(se):
+        'statement : if '
+        se[0] = se[1]
+
+# def p_statement_block(se):
+#         'statement : block'
+#         block = se[1]
+#         comment = ""#se[2]
+#         se[0] = ExpressionStatementNode(block, comment, block.line)
+
+
+
+
 #Expresiones
-def p_expression(se):
+def p_expression_aritmethic(se):
         'expression : aritExp'
+        se[0] = se[1]
+
+def p_expression_boolean(se):
+        'expression : bool'
         se[0] = se[1]
 
 #aritmeticas
@@ -109,14 +120,63 @@ def p_factorExp_paren(se):
         ex1 = se[2]
         se[0] = ParenOperationNode(ex1, ex1.type, ex1.line)
 
+# Boolean
+def p_bool_true(se):
+        'bool : TRUE'
+        se[0] = BooleanNode(se[1]["value"], se[1]["line"])
+
+def p_bool_false(se):
+        'bool : FALSE'
+        se[0] = BooleanNode(se[1]["value"], se[1]["line"])
+
+def p_bool_op(se):
+        'bool : bool BOOL_OP bool'
+        bool1 = se[1]
+        bool2 = se[3]
+        op = se[2]
+        se[0] = BooleanOperationNode(bool1, bool2, op, bool1.line)
+
 
 #comments
-def p_comments(se):
-        'comments : COMMENT comments'
-        se[0] = CommentNode(se[1]["value"], se[2] ,se[1]["line"])
+# def p_comments(se):
+#         'comments : COMMENT comments'
+#         se[0] = CommentNode(se[1]["value"], se[2] ,se[1]["line"])
 
 def p_comments_empty(se):
         'comments : '
+        se[0] = EmptyNode()
+
+# Blocks
+def p_block(se):
+        'block : LBRACE code RBRACE'
+        code = se[2]
+        se[0] = BlockNode(code, code.line)
+
+# Conditional
+def p_if_with_block(se):
+        'if : IF LPAREN bool RPAREN block else'
+        cond = se[3]
+        caseTrue = se[5]
+        caseFalse = se[6]
+        se[0] = IfNode(cond, caseTrue, caseFalse, cond.line)
+
+def p_if_with_statement(se):
+        'if : IF LPAREN bool RPAREN statement else'
+        cond = se[3]
+        caseTrue = se[5]
+        caseFalse = se[6]
+        se[0] = IfNode(cond, caseTrue, caseFalse, cond.line)
+
+def p_else_with_block(se):
+        'else : ELSE block'
+        se[0] = ElseNode(se[2], se[2].line)
+
+def p_else_with_statement(se):
+        'else : ELSE statement'
+        se[0] = ElseNode(se[2], se[2].line)
+
+def p_else_empty(se):
+        'else : '
         se[0] = EmptyNode()
 
 

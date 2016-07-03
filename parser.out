@@ -2,448 +2,880 @@ Created by PLY version 3.8 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
+    COLINEALES
+    DO
+    EQUAL
+    LBRACKET
+    WHILE
+    PRINT
     DOT
+    STRING
     COMMA
+    MULTIPLICACIONESCALAR
+    COLON
+    FOR
+    COMP
+    VAR
+    CAPITALIZAR
+    LENGTH
+    NOT
+    RBRACKET
 
 Grammar
 
-Rule 0     S' -> codeIni
-Rule 1     codeIni -> comments code
-Rule 2     codeIni -> code
-Rule 3     code -> statement code
-Rule 4     code -> <empty>
-Rule 5     statement -> expression SEMICOLON comments
+Rule 0     S' -> code
+Rule 1     code -> statement code
+Rule 2     code -> COMMENT code
+Rule 3     code -> <empty>
+Rule 4     statement -> expression SEMICOLON comments
+Rule 5     statement -> if
 Rule 6     expression -> aritExp
-Rule 7     aritExp -> aritExp AO unaryExp
-Rule 8     aritExp -> unaryExp
-Rule 9     unaryExp -> AO unaryExp
-Rule 10    unaryExp -> DOUBLE_AO unaryExp
-Rule 11    unaryExp -> unaryExp2
-Rule 12    unaryExp2 -> unaryExp2 DOUBLE_AO
-Rule 13    unaryExp2 -> factorExp
-Rule 14    factorExp -> NUMBER
-Rule 15    factorExp -> LPAREN expression RPAREN
-Rule 16    comments -> COMMENT comments
-Rule 17    comments -> <empty>
+Rule 7     expression -> bool
+Rule 8     aritExp -> aritExp AO unaryExp
+Rule 9     aritExp -> unaryExp
+Rule 10    unaryExp -> AO unaryExp
+Rule 11    unaryExp -> DOUBLE_AO unaryExp
+Rule 12    unaryExp -> unaryExp2
+Rule 13    unaryExp2 -> unaryExp2 DOUBLE_AO
+Rule 14    unaryExp2 -> factorExp
+Rule 15    factorExp -> NUMBER
+Rule 16    factorExp -> LPAREN expression RPAREN
+Rule 17    bool -> TRUE
+Rule 18    bool -> FALSE
+Rule 19    bool -> bool BOOL_OP bool
+Rule 20    comments -> <empty>
+Rule 21    block -> LBRACE code RBRACE
+Rule 22    if -> IF LPAREN bool RPAREN block else
+Rule 23    if -> IF LPAREN bool RPAREN statement else
+Rule 24    else -> ELSE block
+Rule 25    else -> ELSE statement
+Rule 26    else -> <empty>
 
 Terminals, with rules where they appear
 
-AO                   : 7 9
+AO                   : 8 10
+BOOL_OP              : 19
+CAPITALIZAR          : 
+COLINEALES           : 
+COLON                : 
 COMMA                : 
-COMMENT              : 16
+COMMENT              : 2
+COMP                 : 
+DO                   : 
 DOT                  : 
-DOUBLE_AO            : 10 12
-LPAREN               : 15
-NUMBER               : 14
-RPAREN               : 15
-SEMICOLON            : 5
+DOUBLE_AO            : 11 13
+ELSE                 : 24 25
+EQUAL                : 
+FALSE                : 18
+FOR                  : 
+IF                   : 22 23
+LBRACE               : 21
+LBRACKET             : 
+LENGTH               : 
+LPAREN               : 16 22 23
+MULTIPLICACIONESCALAR : 
+NOT                  : 
+NUMBER               : 15
+PRINT                : 
+RBRACE               : 21
+RBRACKET             : 
+RPAREN               : 16 22 23
+SEMICOLON            : 4
+STRING               : 
+TRUE                 : 17
+VAR                  : 
+WHILE                : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-aritExp              : 6 7
-code                 : 1 2 3
-codeIni              : 0
-comments             : 1 5 16
-expression           : 5 15
-factorExp            : 13
-statement            : 3
-unaryExp             : 7 8 9 10
-unaryExp2            : 11 12
+aritExp              : 6 8
+block                : 22 24
+bool                 : 7 19 19 22 23
+code                 : 1 2 21 0
+comments             : 4
+else                 : 22 23
+expression           : 4 16
+factorExp            : 14
+if                   : 5
+statement            : 1 23 25
+unaryExp             : 8 9 10 11
+unaryExp2            : 12 13
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . codeIni
-    (1) codeIni -> . comments code
-    (2) codeIni -> . code
-    (16) comments -> . COMMENT comments
-    (17) comments -> .
-    (3) code -> . statement code
-    (4) code -> .
-    (5) statement -> . expression SEMICOLON comments
+    (0) S' -> . code
+    (1) code -> . statement code
+    (2) code -> . COMMENT code
+    (3) code -> .
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
     (6) expression -> . aritExp
-    (7) aritExp -> . aritExp AO unaryExp
-    (8) aritExp -> . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-  ! reduce/reduce conflict for $end resolved using rule 4 (code -> .)
-  ! shift/reduce conflict for AO resolved as shift
-  ! shift/reduce conflict for DOUBLE_AO resolved as shift
-  ! shift/reduce conflict for NUMBER resolved as shift
-  ! shift/reduce conflict for LPAREN resolved as shift
-    COMMENT         shift and go to state 10
-    $end            reduce using rule 4 (code -> .)
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
+    COMMENT         shift and go to state 5
+    $end            reduce using rule 3 (code -> .)
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
-  ! AO              [ reduce using rule 17 (comments -> .) ]
-  ! DOUBLE_AO       [ reduce using rule 17 (comments -> .) ]
-  ! NUMBER          [ reduce using rule 17 (comments -> .) ]
-  ! LPAREN          [ reduce using rule 17 (comments -> .) ]
-  ! $end            [ reduce using rule 17 (comments -> .) ]
-
-    codeIni                        shift and go to state 2
-    unaryExp2                      shift and go to state 6
-    unaryExp                       shift and go to state 9
-    statement                      shift and go to state 11
-    expression                     shift and go to state 4
-    comments                       shift and go to state 12
-    code                           shift and go to state 7
-    factorExp                      shift and go to state 14
-    aritExp                        shift and go to state 13
+    code                           shift and go to state 1
+    expression                     shift and go to state 17
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 8
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    aritExp                        shift and go to state 12
+    if                             shift and go to state 4
 
 state 1
 
-    (10) unaryExp -> DOUBLE_AO . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (0) S' -> code .
 
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
 
-    unaryExp2                      shift and go to state 6
-    factorExp                      shift and go to state 14
-    unaryExp                       shift and go to state 15
 
 state 2
 
-    (0) S' -> codeIni .
+    (15) factorExp -> NUMBER .
 
+    DOUBLE_AO       reduce using rule 15 (factorExp -> NUMBER .)
+    AO              reduce using rule 15 (factorExp -> NUMBER .)
+    RPAREN          reduce using rule 15 (factorExp -> NUMBER .)
+    SEMICOLON       reduce using rule 15 (factorExp -> NUMBER .)
 
 
 state 3
 
-    (9) unaryExp -> AO . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (17) bool -> TRUE .
 
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
+    BOOL_OP         reduce using rule 17 (bool -> TRUE .)
+    RPAREN          reduce using rule 17 (bool -> TRUE .)
+    SEMICOLON       reduce using rule 17 (bool -> TRUE .)
 
-    unaryExp2                      shift and go to state 6
-    factorExp                      shift and go to state 14
-    unaryExp                       shift and go to state 16
 
 state 4
 
-    (5) statement -> expression . SEMICOLON comments
+    (5) statement -> if .
 
-    SEMICOLON       shift and go to state 17
+    COMMENT         reduce using rule 5 (statement -> if .)
+    IF              reduce using rule 5 (statement -> if .)
+    TRUE            reduce using rule 5 (statement -> if .)
+    FALSE           reduce using rule 5 (statement -> if .)
+    AO              reduce using rule 5 (statement -> if .)
+    DOUBLE_AO       reduce using rule 5 (statement -> if .)
+    NUMBER          reduce using rule 5 (statement -> if .)
+    LPAREN          reduce using rule 5 (statement -> if .)
+    $end            reduce using rule 5 (statement -> if .)
+    RBRACE          reduce using rule 5 (statement -> if .)
+    ELSE            reduce using rule 5 (statement -> if .)
 
 
 state 5
 
-    (14) factorExp -> NUMBER .
+    (2) code -> COMMENT . code
+    (1) code -> . statement code
+    (2) code -> . COMMENT code
+    (3) code -> .
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
+    (6) expression -> . aritExp
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    DOUBLE_AO       reduce using rule 14 (factorExp -> NUMBER .)
-    AO              reduce using rule 14 (factorExp -> NUMBER .)
-    SEMICOLON       reduce using rule 14 (factorExp -> NUMBER .)
-    RPAREN          reduce using rule 14 (factorExp -> NUMBER .)
+    COMMENT         shift and go to state 5
+    $end            reduce using rule 3 (code -> .)
+    RBRACE          reduce using rule 3 (code -> .)
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
+    code                           shift and go to state 18
+    expression                     shift and go to state 17
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 8
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    aritExp                        shift and go to state 12
+    if                             shift and go to state 4
 
 state 6
 
-    (11) unaryExp -> unaryExp2 .
-    (12) unaryExp2 -> unaryExp2 . DOUBLE_AO
+    (11) unaryExp -> DOUBLE_AO . unaryExp
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    AO              reduce using rule 11 (unaryExp -> unaryExp2 .)
-    SEMICOLON       reduce using rule 11 (unaryExp -> unaryExp2 .)
-    RPAREN          reduce using rule 11 (unaryExp -> unaryExp2 .)
-    DOUBLE_AO       shift and go to state 18
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
+    unaryExp                       shift and go to state 19
+    unaryExp2                      shift and go to state 15
+    factorExp                      shift and go to state 11
 
 state 7
 
-    (2) codeIni -> code .
+    (7) expression -> bool .
+    (19) bool -> bool . BOOL_OP bool
 
-    $end            reduce using rule 2 (codeIni -> code .)
+    SEMICOLON       reduce using rule 7 (expression -> bool .)
+    RPAREN          reduce using rule 7 (expression -> bool .)
+    BOOL_OP         shift and go to state 20
 
 
 state 8
 
-    (15) factorExp -> LPAREN . expression RPAREN
+    (1) code -> statement . code
+    (1) code -> . statement code
+    (2) code -> . COMMENT code
+    (3) code -> .
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
     (6) expression -> . aritExp
-    (7) aritExp -> . aritExp AO unaryExp
-    (8) aritExp -> . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
+    COMMENT         shift and go to state 5
+    $end            reduce using rule 3 (code -> .)
+    RBRACE          reduce using rule 3 (code -> .)
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
-    expression                     shift and go to state 19
-    unaryExp2                      shift and go to state 6
-    factorExp                      shift and go to state 14
-    aritExp                        shift and go to state 13
-    unaryExp                       shift and go to state 9
+    code                           shift and go to state 21
+    expression                     shift and go to state 17
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 8
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    aritExp                        shift and go to state 12
+    if                             shift and go to state 4
 
 state 9
 
-    (8) aritExp -> unaryExp .
+    (10) unaryExp -> AO . unaryExp
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    AO              reduce using rule 8 (aritExp -> unaryExp .)
-    SEMICOLON       reduce using rule 8 (aritExp -> unaryExp .)
-    RPAREN          reduce using rule 8 (aritExp -> unaryExp .)
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
+    unaryExp                       shift and go to state 22
+    unaryExp2                      shift and go to state 15
+    factorExp                      shift and go to state 11
 
 state 10
 
-    (16) comments -> COMMENT . comments
-    (16) comments -> . COMMENT comments
-    (17) comments -> .
+    (16) factorExp -> LPAREN . expression RPAREN
+    (6) expression -> . aritExp
+    (7) expression -> . bool
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    COMMENT         shift and go to state 10
-    AO              reduce using rule 17 (comments -> .)
-    DOUBLE_AO       reduce using rule 17 (comments -> .)
-    NUMBER          reduce using rule 17 (comments -> .)
-    LPAREN          reduce using rule 17 (comments -> .)
-    $end            reduce using rule 17 (comments -> .)
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
-    comments                       shift and go to state 20
+    expression                     shift and go to state 23
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    aritExp                        shift and go to state 12
 
 state 11
 
-    (3) code -> statement . code
-    (3) code -> . statement code
-    (4) code -> .
-    (5) statement -> . expression SEMICOLON comments
-    (6) expression -> . aritExp
-    (7) aritExp -> . aritExp AO unaryExp
-    (8) aritExp -> . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (14) unaryExp2 -> factorExp .
 
-    $end            reduce using rule 4 (code -> .)
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
+    DOUBLE_AO       reduce using rule 14 (unaryExp2 -> factorExp .)
+    AO              reduce using rule 14 (unaryExp2 -> factorExp .)
+    SEMICOLON       reduce using rule 14 (unaryExp2 -> factorExp .)
+    RPAREN          reduce using rule 14 (unaryExp2 -> factorExp .)
 
-    unaryExp2                      shift and go to state 6
-    unaryExp                       shift and go to state 9
-    expression                     shift and go to state 4
-    statement                      shift and go to state 11
-    aritExp                        shift and go to state 13
-    factorExp                      shift and go to state 14
-    code                           shift and go to state 21
 
 state 12
 
-    (1) codeIni -> comments . code
-    (3) code -> . statement code
-    (4) code -> .
-    (5) statement -> . expression SEMICOLON comments
-    (6) expression -> . aritExp
-    (7) aritExp -> . aritExp AO unaryExp
-    (8) aritExp -> . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
-
-    $end            reduce using rule 4 (code -> .)
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
-
-    unaryExp2                      shift and go to state 6
-    unaryExp                       shift and go to state 9
-    expression                     shift and go to state 4
-    statement                      shift and go to state 11
-    aritExp                        shift and go to state 13
-    factorExp                      shift and go to state 14
-    code                           shift and go to state 22
-
-state 13
-
     (6) expression -> aritExp .
-    (7) aritExp -> aritExp . AO unaryExp
+    (8) aritExp -> aritExp . AO unaryExp
 
     SEMICOLON       reduce using rule 6 (expression -> aritExp .)
     RPAREN          reduce using rule 6 (expression -> aritExp .)
-    AO              shift and go to state 23
+    AO              shift and go to state 24
+
+
+state 13
+
+    (22) if -> IF . LPAREN bool RPAREN block else
+    (23) if -> IF . LPAREN bool RPAREN statement else
+
+    LPAREN          shift and go to state 25
 
 
 state 14
 
-    (13) unaryExp2 -> factorExp .
+    (18) bool -> FALSE .
 
-    DOUBLE_AO       reduce using rule 13 (unaryExp2 -> factorExp .)
-    AO              reduce using rule 13 (unaryExp2 -> factorExp .)
-    SEMICOLON       reduce using rule 13 (unaryExp2 -> factorExp .)
-    RPAREN          reduce using rule 13 (unaryExp2 -> factorExp .)
+    BOOL_OP         reduce using rule 18 (bool -> FALSE .)
+    RPAREN          reduce using rule 18 (bool -> FALSE .)
+    SEMICOLON       reduce using rule 18 (bool -> FALSE .)
 
 
 state 15
 
-    (10) unaryExp -> DOUBLE_AO unaryExp .
+    (12) unaryExp -> unaryExp2 .
+    (13) unaryExp2 -> unaryExp2 . DOUBLE_AO
 
-    AO              reduce using rule 10 (unaryExp -> DOUBLE_AO unaryExp .)
-    SEMICOLON       reduce using rule 10 (unaryExp -> DOUBLE_AO unaryExp .)
-    RPAREN          reduce using rule 10 (unaryExp -> DOUBLE_AO unaryExp .)
+    AO              reduce using rule 12 (unaryExp -> unaryExp2 .)
+    SEMICOLON       reduce using rule 12 (unaryExp -> unaryExp2 .)
+    RPAREN          reduce using rule 12 (unaryExp -> unaryExp2 .)
+    DOUBLE_AO       shift and go to state 26
 
 
 state 16
 
-    (9) unaryExp -> AO unaryExp .
+    (9) aritExp -> unaryExp .
 
-    AO              reduce using rule 9 (unaryExp -> AO unaryExp .)
-    SEMICOLON       reduce using rule 9 (unaryExp -> AO unaryExp .)
-    RPAREN          reduce using rule 9 (unaryExp -> AO unaryExp .)
+    AO              reduce using rule 9 (aritExp -> unaryExp .)
+    SEMICOLON       reduce using rule 9 (aritExp -> unaryExp .)
+    RPAREN          reduce using rule 9 (aritExp -> unaryExp .)
 
 
 state 17
 
-    (5) statement -> expression SEMICOLON . comments
-    (16) comments -> . COMMENT comments
-    (17) comments -> .
+    (4) statement -> expression . SEMICOLON comments
 
-    COMMENT         shift and go to state 10
-    AO              reduce using rule 17 (comments -> .)
-    DOUBLE_AO       reduce using rule 17 (comments -> .)
-    NUMBER          reduce using rule 17 (comments -> .)
-    LPAREN          reduce using rule 17 (comments -> .)
-    $end            reduce using rule 17 (comments -> .)
+    SEMICOLON       shift and go to state 27
 
-    comments                       shift and go to state 24
 
 state 18
 
-    (12) unaryExp2 -> unaryExp2 DOUBLE_AO .
+    (2) code -> COMMENT code .
 
-    DOUBLE_AO       reduce using rule 12 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
-    AO              reduce using rule 12 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
-    SEMICOLON       reduce using rule 12 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
-    RPAREN          reduce using rule 12 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
+    $end            reduce using rule 2 (code -> COMMENT code .)
+    RBRACE          reduce using rule 2 (code -> COMMENT code .)
 
 
 state 19
 
-    (15) factorExp -> LPAREN expression . RPAREN
+    (11) unaryExp -> DOUBLE_AO unaryExp .
 
-    RPAREN          shift and go to state 25
+    AO              reduce using rule 11 (unaryExp -> DOUBLE_AO unaryExp .)
+    SEMICOLON       reduce using rule 11 (unaryExp -> DOUBLE_AO unaryExp .)
+    RPAREN          reduce using rule 11 (unaryExp -> DOUBLE_AO unaryExp .)
 
 
 state 20
 
-    (16) comments -> COMMENT comments .
+    (19) bool -> bool BOOL_OP . bool
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
 
-    AO              reduce using rule 16 (comments -> COMMENT comments .)
-    DOUBLE_AO       reduce using rule 16 (comments -> COMMENT comments .)
-    NUMBER          reduce using rule 16 (comments -> COMMENT comments .)
-    LPAREN          reduce using rule 16 (comments -> COMMENT comments .)
-    $end            reduce using rule 16 (comments -> COMMENT comments .)
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
 
+    bool                           shift and go to state 28
 
 state 21
 
-    (3) code -> statement code .
+    (1) code -> statement code .
 
-    $end            reduce using rule 3 (code -> statement code .)
+    $end            reduce using rule 1 (code -> statement code .)
+    RBRACE          reduce using rule 1 (code -> statement code .)
 
 
 state 22
 
-    (1) codeIni -> comments code .
+    (10) unaryExp -> AO unaryExp .
 
-    $end            reduce using rule 1 (codeIni -> comments code .)
+    AO              reduce using rule 10 (unaryExp -> AO unaryExp .)
+    SEMICOLON       reduce using rule 10 (unaryExp -> AO unaryExp .)
+    RPAREN          reduce using rule 10 (unaryExp -> AO unaryExp .)
 
 
 state 23
 
-    (7) aritExp -> aritExp AO . unaryExp
-    (9) unaryExp -> . AO unaryExp
-    (10) unaryExp -> . DOUBLE_AO unaryExp
-    (11) unaryExp -> . unaryExp2
-    (12) unaryExp2 -> . unaryExp2 DOUBLE_AO
-    (13) unaryExp2 -> . factorExp
-    (14) factorExp -> . NUMBER
-    (15) factorExp -> . LPAREN expression RPAREN
+    (16) factorExp -> LPAREN expression . RPAREN
 
-    AO              shift and go to state 3
-    DOUBLE_AO       shift and go to state 1
-    NUMBER          shift and go to state 5
-    LPAREN          shift and go to state 8
+    RPAREN          shift and go to state 29
 
-    unaryExp2                      shift and go to state 6
-    factorExp                      shift and go to state 14
-    unaryExp                       shift and go to state 26
 
 state 24
 
-    (5) statement -> expression SEMICOLON comments .
+    (8) aritExp -> aritExp AO . unaryExp
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
 
-    AO              reduce using rule 5 (statement -> expression SEMICOLON comments .)
-    DOUBLE_AO       reduce using rule 5 (statement -> expression SEMICOLON comments .)
-    NUMBER          reduce using rule 5 (statement -> expression SEMICOLON comments .)
-    LPAREN          reduce using rule 5 (statement -> expression SEMICOLON comments .)
-    $end            reduce using rule 5 (statement -> expression SEMICOLON comments .)
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
 
+    unaryExp                       shift and go to state 30
+    unaryExp2                      shift and go to state 15
+    factorExp                      shift and go to state 11
 
 state 25
 
-    (15) factorExp -> LPAREN expression RPAREN .
+    (22) if -> IF LPAREN . bool RPAREN block else
+    (23) if -> IF LPAREN . bool RPAREN statement else
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
 
-    DOUBLE_AO       reduce using rule 15 (factorExp -> LPAREN expression RPAREN .)
-    AO              reduce using rule 15 (factorExp -> LPAREN expression RPAREN .)
-    SEMICOLON       reduce using rule 15 (factorExp -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 15 (factorExp -> LPAREN expression RPAREN .)
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
 
+    bool                           shift and go to state 31
 
 state 26
 
-    (7) aritExp -> aritExp AO unaryExp .
+    (13) unaryExp2 -> unaryExp2 DOUBLE_AO .
 
-    AO              reduce using rule 7 (aritExp -> aritExp AO unaryExp .)
-    SEMICOLON       reduce using rule 7 (aritExp -> aritExp AO unaryExp .)
-    RPAREN          reduce using rule 7 (aritExp -> aritExp AO unaryExp .)
+    DOUBLE_AO       reduce using rule 13 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
+    AO              reduce using rule 13 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
+    SEMICOLON       reduce using rule 13 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
+    RPAREN          reduce using rule 13 (unaryExp2 -> unaryExp2 DOUBLE_AO .)
+
+
+state 27
+
+    (4) statement -> expression SEMICOLON . comments
+    (20) comments -> .
+
+    COMMENT         reduce using rule 20 (comments -> .)
+    IF              reduce using rule 20 (comments -> .)
+    TRUE            reduce using rule 20 (comments -> .)
+    FALSE           reduce using rule 20 (comments -> .)
+    AO              reduce using rule 20 (comments -> .)
+    DOUBLE_AO       reduce using rule 20 (comments -> .)
+    NUMBER          reduce using rule 20 (comments -> .)
+    LPAREN          reduce using rule 20 (comments -> .)
+    $end            reduce using rule 20 (comments -> .)
+    RBRACE          reduce using rule 20 (comments -> .)
+    ELSE            reduce using rule 20 (comments -> .)
+
+    comments                       shift and go to state 32
+
+state 28
+
+    (19) bool -> bool BOOL_OP bool .
+    (19) bool -> bool . BOOL_OP bool
+
+  ! shift/reduce conflict for BOOL_OP resolved as shift
+    RPAREN          reduce using rule 19 (bool -> bool BOOL_OP bool .)
+    SEMICOLON       reduce using rule 19 (bool -> bool BOOL_OP bool .)
+    BOOL_OP         shift and go to state 20
+
+  ! BOOL_OP         [ reduce using rule 19 (bool -> bool BOOL_OP bool .) ]
+
+
+state 29
+
+    (16) factorExp -> LPAREN expression RPAREN .
+
+    DOUBLE_AO       reduce using rule 16 (factorExp -> LPAREN expression RPAREN .)
+    AO              reduce using rule 16 (factorExp -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 16 (factorExp -> LPAREN expression RPAREN .)
+    SEMICOLON       reduce using rule 16 (factorExp -> LPAREN expression RPAREN .)
+
+
+state 30
+
+    (8) aritExp -> aritExp AO unaryExp .
+
+    AO              reduce using rule 8 (aritExp -> aritExp AO unaryExp .)
+    SEMICOLON       reduce using rule 8 (aritExp -> aritExp AO unaryExp .)
+    RPAREN          reduce using rule 8 (aritExp -> aritExp AO unaryExp .)
+
+
+state 31
+
+    (22) if -> IF LPAREN bool . RPAREN block else
+    (23) if -> IF LPAREN bool . RPAREN statement else
+    (19) bool -> bool . BOOL_OP bool
+
+    RPAREN          shift and go to state 33
+    BOOL_OP         shift and go to state 20
+
+
+state 32
+
+    (4) statement -> expression SEMICOLON comments .
+
+    COMMENT         reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    IF              reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    TRUE            reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    FALSE           reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    AO              reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    DOUBLE_AO       reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    NUMBER          reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    LPAREN          reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    $end            reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    RBRACE          reduce using rule 4 (statement -> expression SEMICOLON comments .)
+    ELSE            reduce using rule 4 (statement -> expression SEMICOLON comments .)
+
+
+state 33
+
+    (22) if -> IF LPAREN bool RPAREN . block else
+    (23) if -> IF LPAREN bool RPAREN . statement else
+    (21) block -> . LBRACE code RBRACE
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
+    (6) expression -> . aritExp
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
+
+    LBRACE          shift and go to state 35
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
+
+    aritExp                        shift and go to state 12
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 34
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    expression                     shift and go to state 17
+    block                          shift and go to state 36
+    if                             shift and go to state 4
+
+state 34
+
+    (23) if -> IF LPAREN bool RPAREN statement . else
+    (24) else -> . ELSE block
+    (25) else -> . ELSE statement
+    (26) else -> .
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    ELSE            shift and go to state 38
+    COMMENT         reduce using rule 26 (else -> .)
+    IF              reduce using rule 26 (else -> .)
+    TRUE            reduce using rule 26 (else -> .)
+    FALSE           reduce using rule 26 (else -> .)
+    AO              reduce using rule 26 (else -> .)
+    DOUBLE_AO       reduce using rule 26 (else -> .)
+    NUMBER          reduce using rule 26 (else -> .)
+    LPAREN          reduce using rule 26 (else -> .)
+    $end            reduce using rule 26 (else -> .)
+    RBRACE          reduce using rule 26 (else -> .)
+
+  ! ELSE            [ reduce using rule 26 (else -> .) ]
+
+    else                           shift and go to state 37
+
+state 35
+
+    (21) block -> LBRACE . code RBRACE
+    (1) code -> . statement code
+    (2) code -> . COMMENT code
+    (3) code -> .
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
+    (6) expression -> . aritExp
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
+
+    COMMENT         shift and go to state 5
+    RBRACE          reduce using rule 3 (code -> .)
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
+
+    code                           shift and go to state 39
+    expression                     shift and go to state 17
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 8
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    aritExp                        shift and go to state 12
+    if                             shift and go to state 4
+
+state 36
+
+    (22) if -> IF LPAREN bool RPAREN block . else
+    (24) else -> . ELSE block
+    (25) else -> . ELSE statement
+    (26) else -> .
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    ELSE            shift and go to state 38
+    COMMENT         reduce using rule 26 (else -> .)
+    IF              reduce using rule 26 (else -> .)
+    TRUE            reduce using rule 26 (else -> .)
+    FALSE           reduce using rule 26 (else -> .)
+    AO              reduce using rule 26 (else -> .)
+    DOUBLE_AO       reduce using rule 26 (else -> .)
+    NUMBER          reduce using rule 26 (else -> .)
+    LPAREN          reduce using rule 26 (else -> .)
+    $end            reduce using rule 26 (else -> .)
+    RBRACE          reduce using rule 26 (else -> .)
+
+  ! ELSE            [ reduce using rule 26 (else -> .) ]
+
+    else                           shift and go to state 40
+
+state 37
+
+    (23) if -> IF LPAREN bool RPAREN statement else .
+
+    COMMENT         reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    IF              reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    TRUE            reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    FALSE           reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    AO              reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    DOUBLE_AO       reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    NUMBER          reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    LPAREN          reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    $end            reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    RBRACE          reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+    ELSE            reduce using rule 23 (if -> IF LPAREN bool RPAREN statement else .)
+
+
+state 38
+
+    (24) else -> ELSE . block
+    (25) else -> ELSE . statement
+    (21) block -> . LBRACE code RBRACE
+    (4) statement -> . expression SEMICOLON comments
+    (5) statement -> . if
+    (6) expression -> . aritExp
+    (7) expression -> . bool
+    (22) if -> . IF LPAREN bool RPAREN block else
+    (23) if -> . IF LPAREN bool RPAREN statement else
+    (8) aritExp -> . aritExp AO unaryExp
+    (9) aritExp -> . unaryExp
+    (17) bool -> . TRUE
+    (18) bool -> . FALSE
+    (19) bool -> . bool BOOL_OP bool
+    (10) unaryExp -> . AO unaryExp
+    (11) unaryExp -> . DOUBLE_AO unaryExp
+    (12) unaryExp -> . unaryExp2
+    (13) unaryExp2 -> . unaryExp2 DOUBLE_AO
+    (14) unaryExp2 -> . factorExp
+    (15) factorExp -> . NUMBER
+    (16) factorExp -> . LPAREN expression RPAREN
+
+    LBRACE          shift and go to state 35
+    IF              shift and go to state 13
+    TRUE            shift and go to state 3
+    FALSE           shift and go to state 14
+    AO              shift and go to state 9
+    DOUBLE_AO       shift and go to state 6
+    NUMBER          shift and go to state 2
+    LPAREN          shift and go to state 10
+
+    aritExp                        shift and go to state 12
+    unaryExp2                      shift and go to state 15
+    bool                           shift and go to state 7
+    statement                      shift and go to state 41
+    factorExp                      shift and go to state 11
+    unaryExp                       shift and go to state 16
+    expression                     shift and go to state 17
+    block                          shift and go to state 42
+    if                             shift and go to state 4
+
+state 39
+
+    (21) block -> LBRACE code . RBRACE
+
+    RBRACE          shift and go to state 43
+
+
+state 40
+
+    (22) if -> IF LPAREN bool RPAREN block else .
+
+    COMMENT         reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    IF              reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    TRUE            reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    FALSE           reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    AO              reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    DOUBLE_AO       reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    NUMBER          reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    LPAREN          reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    $end            reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    RBRACE          reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+    ELSE            reduce using rule 22 (if -> IF LPAREN bool RPAREN block else .)
+
+
+state 41
+
+    (25) else -> ELSE statement .
+
+    ELSE            reduce using rule 25 (else -> ELSE statement .)
+    COMMENT         reduce using rule 25 (else -> ELSE statement .)
+    IF              reduce using rule 25 (else -> ELSE statement .)
+    TRUE            reduce using rule 25 (else -> ELSE statement .)
+    FALSE           reduce using rule 25 (else -> ELSE statement .)
+    AO              reduce using rule 25 (else -> ELSE statement .)
+    DOUBLE_AO       reduce using rule 25 (else -> ELSE statement .)
+    NUMBER          reduce using rule 25 (else -> ELSE statement .)
+    LPAREN          reduce using rule 25 (else -> ELSE statement .)
+    $end            reduce using rule 25 (else -> ELSE statement .)
+    RBRACE          reduce using rule 25 (else -> ELSE statement .)
+
+
+state 42
+
+    (24) else -> ELSE block .
+
+    ELSE            reduce using rule 24 (else -> ELSE block .)
+    COMMENT         reduce using rule 24 (else -> ELSE block .)
+    IF              reduce using rule 24 (else -> ELSE block .)
+    TRUE            reduce using rule 24 (else -> ELSE block .)
+    FALSE           reduce using rule 24 (else -> ELSE block .)
+    AO              reduce using rule 24 (else -> ELSE block .)
+    DOUBLE_AO       reduce using rule 24 (else -> ELSE block .)
+    NUMBER          reduce using rule 24 (else -> ELSE block .)
+    LPAREN          reduce using rule 24 (else -> ELSE block .)
+    $end            reduce using rule 24 (else -> ELSE block .)
+    RBRACE          reduce using rule 24 (else -> ELSE block .)
+
+
+state 43
+
+    (21) block -> LBRACE code RBRACE .
+
+    ELSE            reduce using rule 21 (block -> LBRACE code RBRACE .)
+    COMMENT         reduce using rule 21 (block -> LBRACE code RBRACE .)
+    IF              reduce using rule 21 (block -> LBRACE code RBRACE .)
+    TRUE            reduce using rule 21 (block -> LBRACE code RBRACE .)
+    FALSE           reduce using rule 21 (block -> LBRACE code RBRACE .)
+    AO              reduce using rule 21 (block -> LBRACE code RBRACE .)
+    DOUBLE_AO       reduce using rule 21 (block -> LBRACE code RBRACE .)
+    NUMBER          reduce using rule 21 (block -> LBRACE code RBRACE .)
+    LPAREN          reduce using rule 21 (block -> LBRACE code RBRACE .)
+    $end            reduce using rule 21 (block -> LBRACE code RBRACE .)
+    RBRACE          reduce using rule 21 (block -> LBRACE code RBRACE .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for AO in state 0 resolved as shift
-WARNING: shift/reduce conflict for DOUBLE_AO in state 0 resolved as shift
-WARNING: shift/reduce conflict for NUMBER in state 0 resolved as shift
-WARNING: shift/reduce conflict for LPAREN in state 0 resolved as shift
-WARNING: reduce/reduce conflict in state 0 resolved using rule (code -> <empty>)
-WARNING: rejected rule (comments -> <empty>) in state 0
+WARNING: shift/reduce conflict for BOOL_OP in state 28 resolved as shift
+WARNING: shift/reduce conflict for ELSE in state 34 resolved as shift
+WARNING: shift/reduce conflict for ELSE in state 36 resolved as shift
