@@ -98,13 +98,25 @@ class BooleanOperationNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                pdb.set_trace()
-
                 return (self.bool1.evaluate(indexLevel, line) +
                        " " + self.op + " " +
                        self.bool2.evaluate(indexLevel, line))
 
+class BooleanNegationNode(Node):
+        def __init__(self, bool1, line):
+                self.bool1 = bool1
+                self.line = line
 
+        def evaluate(self, indexLevel, line):
+                return ("NOT " + self.bool1.evaluate(indexLevel, line))
+
+class BooleanParenExpression(Node):
+        def __init__(self, expr, line):
+                self.expr = expr
+                self.line = line
+
+        def evaluate(self, indexLevel, line):
+                return "(%s)" % self.expr.evaluate(indexLevel, line)
 
 
 class CommentNode(Node):
@@ -178,7 +190,7 @@ class BlockNode(Node):
         def evaluate(self, indexLevel, line):
                 ret = "{\n"
                 ret += self.code.evaluate(indexLevel + 1, self.line)
-                ret += "\t" * indexLevel + "}"
+                ret += "\t" * indexLevel + "} \n"
 
                 return ret
 

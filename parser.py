@@ -7,11 +7,11 @@ lexer = lex(module=lexer_rules_v2)
 parser = yacc(module=parser_rules_v2)
 text = """
 # un comentario
-if (true){
+if (  (NOT true) OR false ){
 1+2;
 }
 1;
-true AND false;
+true AND (  false OR     true);
 #otro comentario
 """
 

@@ -136,6 +136,16 @@ def p_bool_op(se):
         op = se[2]
         se[0] = BooleanOperationNode(bool1, bool2, op, bool1.line)
 
+def p_bool_neg(se):
+        'bool : NOT bool'
+        bool1 = se[2]
+        se[0] = BooleanNegationNode(bool1, bool1.line)
+
+def p_bool_paren(se):
+        'bool : LPAREN bool RPAREN'
+        expr = se[2]
+        se[0] = BooleanParenExpression(expr, expr.line)
+
 
 #comments
 # def p_comments(se):

@@ -1,4 +1,4 @@
-import pdb
+# import pdb
 tokens = [
     # aritmeticos
     'AO',
@@ -114,8 +114,6 @@ def t_NEWLINE(token):
 
 def t_COMMENT(token):
     r"\#.*"
-    # token.value = token.value.strip()
-    # token.line = token.lexer.lineno
     token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
     return token
 
