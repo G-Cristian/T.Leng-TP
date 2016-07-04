@@ -51,6 +51,18 @@ if(2+3<4 OR 3>5+4)
 #y esto tampoco tiene que funcionar
 #if(2+3<4 OR (3>5)+4)
 #2+3;
+
+2+[[1,2],[[2][0]*1]][6/[6][0]][0]*3;
+
+++3;
+
+++[3][0];
+
+[3][0]++;
+
+a=3;
+#b=a+3;
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

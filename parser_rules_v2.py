@@ -59,7 +59,7 @@ def p_statement_do_while(se):
 
 #Expresiones
 def p_expression_aritmethic(se):
-        'expression : expressionBoolOp'
+        'expression : expressionAssign'
         se[0] = se[1]
 
 # def p_expression_boolean(se):
@@ -102,7 +102,7 @@ def p_unaryExp(se):
         'unaryExp : AO unaryExp'
         op = se[1]
         ex1 = se[2]
-        if op.value != "+" and op.value != "-":
+        if op != "+" and op != "-":
                 raise Exception("Error en operador unario")
         else:
                 if isNumeric(ex1.type):
@@ -121,8 +121,8 @@ def p_unaryExp_double(se):
         else:
                 raise Exception("Error de tipos en operador aritmetico unario doble")
 
-def p_unaryExp_double_vectorAt(se):
-        'unaryExp : expressionVectorAt'
+def p_unaryExp_double_unaryExp2(se):
+        'unaryExp : unaryExp2'
         se[0] = se[1]
 
 def p_unaryExp_double2(se):
@@ -139,6 +139,10 @@ def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
         se[0] = se[1]
 
+def p_factorExp_Var(se):
+        'factorExp : factorVar'
+        se[0] = se[1]
+
 def p_factorExp_Num(se):
         'factorExp : factorNumExp'
         se[0] = se[1]
@@ -151,10 +155,18 @@ def p_factorExp_Vector(se):
         'factorExp : expressionVector'
         se[0] = se[1]
 
+def p_factorExp_VectorAt(se):
+        'factorExp : expressionVectorAt'
+        se[0] = se[1]
+
 def p_factorExp_paren(se):
         'factorExp : LPAREN expression RPAREN'
         ex1 = se[2]
         se[0] = ParenOperationNode(ex1, ex1.type, ex1.line)
+
+def p_factorVarExp(se):
+        'factorVar : VAR'
+        se[0] = VarNode(se[1]["value"],se[1]["line"])
 
 def p_factorNumExp(se):
         'factorNumExp : NUMBER'
@@ -255,8 +267,47 @@ def p_vector_at(se):
         checkType(index, "int")
         se[0] = VectorAtNode(vect, index, vect.line, vect.type)
 
-def p_vector_at_unaryExp2(se):
-        'expressionVectorAt : unaryExp2'
+def p_vector_at_vector(se):
+        'expressionVectorAt : expressionVector'
+        se[0] = se[1]
+
+def p_vector_at_var(se):
+        'expressionVectorAt : factorVar'
+        se[0] = se[1]
+
+#asignaciones
+def p_var_equals(se):
+        'expressionAssign : factorVar EQUAL expressionAssign'
+        ex1 = se[1]
+        ex2 = se[3]
+        op = se[2]
+
+        ex1.type = ex2.type
+        se[0] = AssignOperationNode(ex1, ex2, op, ex1.line)
+
+def p_vector_equals(se):
+        'expressionAssign :  expressionVectorAt EQUAL expressionAssign'
+
+        ex1 = se[1]
+        ex2 = se[3]
+        op = se[2]
+
+        #El vector de expresionVectorAt tiene que ser una variable
+        #Es decir es una variable de tipo vector de algun tipo
+        if isVar(ex1.vect):
+                #si el tipo del vector todavia no se asigno lo va a asignar al tipo de la derecha.
+                #si es del mismo tipo hace lo mismo.
+                if checkType(ex1, 'VAR') or checkType(ex1, ex2.type):
+                        ex1.type[0] = ex2.type
+                        se[0] = AssignOperationNode(ex1, ex2, op, line)
+                else:
+                        #si es de otro tipo entonces no se puede hacer la asignacion
+                        ParserException("No se puede asignar el tipo " + str(exp2.type) + " a vector de tipo " + str(exp1.type), exp1.line)
+        else:
+                ParserException("El vector no es una variable.", exp1.line)
+
+def p_assign_BoolOp(se):
+        'expressionAssign : expressionBoolOp'
         se[0] = se[1]
 
 # Registros

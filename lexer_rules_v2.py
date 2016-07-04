@@ -51,7 +51,7 @@ tokens = [
 ]
 
 t_AO = r"[\+\-\*/\^%]"
-t_DOUBLE_AO = r"\+\+|\-\-"
+t_DOUBLE_AO = r"(\+\+)|(\-\-)"
 t_EQUAL = "="
 t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
@@ -113,6 +113,10 @@ def t_STRING(token):
 def t_VAR(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value,'VAR')    # Check for reserved words
+
+    if t.type == 'VAR':
+        t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}
+
     return t
 
 def t_NEWLINE(token):

@@ -12,6 +12,24 @@ class EmptyNode(Node):
         def evaluate(self, indexLevel, line):
                 return ""
 
+class VarNode(Node):
+
+	def __init__(self, value,line):
+		self.value = value
+		self.type = 'VAR'
+		self.line = line
+
+	def evaluate(self, indexLevel, line):
+                ret = ""
+                # for x in range(0, indexLevel):
+                #         res += "\t"
+                ret += str(self.value)
+
+                return ret
+
+def isVar(t):
+        return t.__class__.__name__ == "VarNode"
+
 class NumberNode(Node):
 
 	def __init__(self, value, nType, line):
@@ -37,6 +55,7 @@ class UnaryOperationNode(Node):
                 self.leftOp = leftOp
 
         def evaluate(self, indexLevel, line):
+                ret = ""
                 # ret = "\t" * indexLevel
                 if self.leftOp:
                         ret += self.operator
@@ -202,6 +221,25 @@ class VectorAtNode(Node):
                 return "%s[%s]" % (
                         self.vect.evaluate(indexLevel, line),
                         self.index.evaluate(indexLevel, line))
+
+class AssignOperationNode(Node):
+
+	def __init__(self, left, right, operator, line):
+		self.left = left
+		self.right = right
+		self.operator = operator
+		self.type = right.type
+		self.line = line
+
+	def evaluate(self, indexLevel, line):
+                ret = ""
+                # for x in range(0, indexLevel):
+                #         ret += "\t"
+                ret += self.left.evaluate(0, self.line)
+                ret += " " + self.operator + " "
+                ret += self.right.evaluate(0, self.line)
+
+                return ret
 
 class CommentNode(Node):
 
