@@ -27,7 +27,6 @@ class NumberNode(Node):
 
                 return ret
 
-
 class UnaryOperationNode(Node):
 
         def __init__(self, right, operator, nType, line, leftOp):
@@ -164,11 +163,19 @@ class VectorNode(Node):
         def __init__(self, items, line, type):
                 self.items = items
                 self.line = line
-                self.type = 'vector'
-                self.item_type = type
+                # el tipo de un vector se representa con una tupla (tipo basico, cantidad de vectores anidados)
+                # por ejemplo, vector<vector<vector<int> > > seria (int, 3)
+                if isTuple(type):
+                        self.type = (type[0], type[1] + 1)
+                else:
+                        self.type = (type, 1)
 
         def evaluate(self, indexLevel, line):
                 return "[%s]" % self.items.evaluate(indexLevel, line)
+
+def isTuple(t):
+        return t.__class__.__name__ == "tuple"
+
 
 class VectorItemsNode(Node):
         def __init__(self, head, tail, line, type):
@@ -181,6 +188,20 @@ class VectorItemsNode(Node):
                 return "%s, %s" % (
                         self.head.evaluate(indexLevel, line),
                         self.tail.evaluate(indexLevel, line))
+
+class VectorAtNode(Node):
+        def __init__(self, vect, index, line, type):
+                self.vect = vect
+                self.index = index
+                self.line = line
+                self.type = (type[0], type[1]-1)
+                if self.type[1] == 0:
+                        self.type = self.type[0]
+
+        def evaluate(self, indexLevel, line):
+                return "%s[%s]" % (
+                        self.vect.evaluate(indexLevel, line),
+                        self.index.evaluate(indexLevel, line))
 
 class CommentNode(Node):
 
@@ -317,7 +338,7 @@ class DoWhileNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                return "%sdo %s while (%s);" % (
+                return "%sdo %s while (%s);\n" % (
                         "\t" * indexLevel,
                         self.content.evaluate(indexLevel, line),
                         self.cond.evaluate(indexLevel, line)

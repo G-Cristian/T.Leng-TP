@@ -35,7 +35,7 @@ for (; true; 5           ) {6        ;}
 do { 1+2+2; } while (NOT true);
 }
 #un vector
-[1,2,3,3.5];
+[true, false, true   ][0] OR true;
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
