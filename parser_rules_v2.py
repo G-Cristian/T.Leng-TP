@@ -2,6 +2,12 @@ from lexer_rules_v2 import tokens
 from expressions_v2 import *
 import pdb
 
+class ParserException(Exception):
+        def __init__(self, message, line):
+                msg = message
+                msg += "\nline: " + str(line)
+                super(ParserException, self).__init__(msg)
+
 #codeIni va aca arriba para que sea el primero de la produccion
 
 #code & statements
@@ -53,7 +59,7 @@ def p_statement_do_while(se):
 
 #Expresiones
 def p_expression_aritmethic(se):
-        'expression : aritExp'
+        'expression : expressionBoolOp'
         se[0] = se[1]
 
 # def p_expression_boolean(se):
@@ -86,7 +92,7 @@ def p_aritExp(se):
                 unifyNumeric(ex1, ex2)
                 se[0] = BinaryOperationNode(ex1, ex2, op, ex1.type, ex1.line)
         else:
-                raise Exception("Error de tipos en operador aritmetico binario")
+                raise ParserException("Error de tipos en operador aritmetico binario", ex1.line)
 
 def p_aritExp_unary(se):
         'aritExp : unaryExp'
@@ -103,7 +109,7 @@ def p_unaryExp(se):
                         ntype = ex1.type
                         se[0] = UnaryOperationNode(ex1, op, ntype, ex1.line, True)
                 else:
-                        raise Exception("Error de tipos en operador aritmetico unario")
+                        raise ParserException("Error de tipos en operador aritmetico unario",ex1.line)
 
 def p_unaryExp_double(se):
         'unaryExp : DOUBLE_AO unaryExp'
@@ -115,8 +121,8 @@ def p_unaryExp_double(se):
         else:
                 raise Exception("Error de tipos en operador aritmetico unario doble")
 
-def p_unaryExp_double_unaryExp2(se):
-        'unaryExp : unaryExp2'
+def p_unaryExp_double_vectorAt(se):
+        'unaryExp : expressionVectorAt'
         se[0] = se[1]
 
 def p_unaryExp_double2(se):
@@ -127,20 +133,32 @@ def p_unaryExp_double2(se):
                 ntype = ex1.type
                 se[0] = UnaryOperationNode(ex1, op1, ntype, ex1.line, False)
         else:
-                raise Exception("Error de tipos en operador aritmetico unario doble")
+                raise ParserException("Error de tipos en operador aritmetico unario doble", ex1.line)
 
 def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
         se[0] = se[1]
 
-def p_factorExp(se):
-        'factorExp : NUMBER'
-        se[0] = NumberNode(se[1]["value"], se[1]["type"], se[1]["line"])
+def p_factorExp_Num(se):
+        'factorExp : factorNumExp'
+        se[0] = se[1]
+
+def p_factorExp_Bool(se):
+        'factorExp : bool_atom'
+        se[0] = se[1]
+
+def p_factorExp_Vector(se):
+        'factorExp : expressionVector'
+        se[0] = se[1]
 
 def p_factorExp_paren(se):
         'factorExp : LPAREN expression RPAREN'
         ex1 = se[2]
         se[0] = ParenOperationNode(ex1, ex1.type, ex1.line)
+
+def p_factorNumExp(se):
+        'factorNumExp : NUMBER'
+        se[0] = NumberNode(se[1]["value"], se[1]["type"], se[1]["line"])
 
 # Boolean
 
@@ -152,36 +170,48 @@ def p_bool_false(se):
         'bool_atom : FALSE'
         se[0] = BooleanNode(se[1]["value"], se[1]["line"])
 
-def p_bool_atom(se):
-        'expression : bool_atom'
-        se[0] = se[1]
+#def p_bool_atom(se):
+#        'expression : bool_atom'
+#        se[0] = se[1]
 
 def p_bool_op(se):
-        'expression : expression BOOL_OP bool_atom'
+        'expressionBoolOp : expressionBoolOp BOOL_OP expressionComp'
         bool1 = se[1]
         bool2 = se[3]
         checkType(bool1, 'bool')
+        checkType(bool2, 'bool')
         op = se[2]
         se[0] = BooleanOperationNode(bool1, bool2, op, bool1.line)
 
+def p_bool_op_comp(se):
+        'expressionBoolOp : expressionComp'
+        se[0] = se[1]
+
 def p_bool_neg(se):
-        'expression : NOT expression'
+        'unaryExp : NOT unaryExp'
         bool1 = se[2]
         checkType(bool1, 'bool')
         se[0] = BooleanNegationNode(bool1, bool1.line)
 
-def p_bool_paren(se):
-        'bool_atom : LPAREN expression RPAREN'
-        expr = se[2]
-        checkType(expr, 'bool')
-        se[0] = BooleanParenExpression(expr, expr.line)
+#def p_bool_paren(se):
+#        'bool_atom : LPAREN expression RPAREN'
+#        expr = se[2]
+#        checkType(expr, 'bool')
+#        se[0] = BooleanParenExpression(expr, expr.line)
 
 def p_bool_comp(se):
-        'expression : aritExp COMP aritExp'
+        'expressionComp : expressionComp COMP aritExp'
         exp1 = se[1]
         comp = se[2]
         exp2 = se[3]
-        se[0] = BooleanCompNode(exp1, comp, exp2, exp1.line)
+        if exp1.type != exp2.type:
+                raise ParserException("Tipos de operandos distintos en comparacion", exp1.line)
+        else:
+                se[0] = BooleanCompNode(exp1, comp, exp2, exp1.line)
+
+def p_bool_comp_arit(se):
+        'expressionComp : aritExp'
+        se[0] = se[1]
 
 # Cadenas
 def p_string(se):
@@ -200,7 +230,7 @@ def p_string_concat(se):
 
 # Vectores
 def p_vector(se):
-        'expression : LBRACKET vector_items RBRACKET'
+        'expressionVector : LBRACKET vector_items RBRACKET'
         items = se[2]
         se[0] = VectorNode(items, items.line, items.type)
 
@@ -218,12 +248,16 @@ def p_vector_single_item(se):
         se[0] = se[1]
 
 def p_vector_at(se):
-        'expression : expression LBRACKET expression RBRACKET'
+        'expressionVectorAt : expressionVectorAt LBRACKET expression RBRACKET'
         vect = se[1]
         index = se[3]
         checkType(vect, "vector")
         checkType(index, "int")
         se[0] = VectorAtNode(vect, index, vect.line, vect.type)
+
+def p_vector_at_unaryExp2(se):
+        'expressionVectorAt : unaryExp2'
+        se[0] = se[1]
 
 # Registros
 # def p_reg(se):

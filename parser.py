@@ -36,6 +36,21 @@ do { 1+2+2; } while (NOT true);
 }
 #un vector
 [true, false, true   ][0] OR true;
+
+#un vector de vectores
+[[true,false], [false], [true,false]   ][2][1] OR true;
+
+#esto tiene que funcionar (primero hace las sumas, despues las comparaciones y despues el or)
+if(2+3<4 OR 3>5+4)
+2+3;
+
+#pero esto no tiene que funcionar
+#if(2+(3<4) OR 3>5+4)
+#2+3;
+
+#y esto tampoco tiene que funcionar
+#if(2+3<4 OR (3>5)+4)
+#2+3;
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

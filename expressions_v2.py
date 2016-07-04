@@ -207,9 +207,9 @@ class CommentNode(Node):
 
 	def __init__(self, comment, code, line):
 		self.comment = comment
-                self.code = code
+		self.code = code
 		self.line = line
-
+                
 	def evaluate(self, indexLevel, line):
                 ret = "\t" * indexLevel + self.comment + "\n"
                 ret += self.code.evaluate(indexLevel, line)
