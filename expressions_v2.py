@@ -76,17 +76,20 @@ class ParenOperationNode(Node):
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
+                return "(%s)" % self.value.evaluate(0, self.line)
                 # ret = "\t" * indexLevel
-                ret += "("
-                ret += self.value.evaluate(0, self.line)
-                ret += ")"
+                # ret += "("
+                # ret += self.value.evaluate(0, self.line)
+                # ret += ")"
 
-                return ret
+                # return ret
 
 class BooleanNode(Node):
         def __init__(self, value, line):
                 self.value = value
                 self.line = line
+                self.type = 'bool'
+
         def evaluate(self, indexLevel, line):
                 return self.value
 
@@ -96,6 +99,7 @@ class BooleanOperationNode(Node):
                 self.bool2 = bool2
                 self.op = op
                 self.line = line
+                self.type = 'bool'
 
         def evaluate(self, indexLevel, line):
                 return (self.bool1.evaluate(indexLevel, line) +
@@ -106,6 +110,7 @@ class BooleanNegationNode(Node):
         def __init__(self, bool1, line):
                 self.bool1 = bool1
                 self.line = line
+                self.type = 'bool'
 
         def evaluate(self, indexLevel, line):
                 return ("NOT " + self.bool1.evaluate(indexLevel, line))
@@ -114,10 +119,68 @@ class BooleanParenExpression(Node):
         def __init__(self, expr, line):
                 self.expr = expr
                 self.line = line
+                self.type = 'bool'
 
         def evaluate(self, indexLevel, line):
                 return "(%s)" % self.expr.evaluate(indexLevel, line)
 
+class BooleanCompNode(Node):
+        def __init__(self, exp1, op, exp2, line):
+                self.exp1 = exp1
+                self.op = op
+                self.exp2 = exp2
+                self.line = line
+                self.type = 'bool'
+
+        def evaluate(self, indexLevel, line):
+                # pdb.set_trace()
+                return (self.exp1.evaluate(indexLevel, line) +
+                       " " + self.op + " " +
+                       self.exp2.evaluate(indexLevel, line))
+
+class StrNode(Node):
+        def __init__(self, string, line):
+                self.string = string
+                self.line = line
+                self.type = 'str'
+
+        def evaluate(self, indexLevel, line):
+                return "\"%s\"" % self.string
+
+class StrConcatNode(Node):
+        def __init__(self, str1, str2, line):
+                self.str1 = str1
+                self.str2 = str2
+                self.line = line
+                self.type = 'str'
+
+        def evaluate(self, indexLevel, line):
+                return "%s + %s" % (
+                        self.str1.evaluate(indexLevel, line),
+                        self.str2.evaluate(indexLevel, line)
+                        )
+
+class VectorNode(Node):
+        def __init__(self, items, line, type):
+                self.items = items
+                self.line = line
+                self.type = 'vector'
+                self.item_type = type
+
+        def evaluate(self, indexLevel, line):
+                return "[%s]" % self.items.evaluate(indexLevel, line)
+
+class VectorItemsNode(Node):
+        def __init__(self, head, tail, line, type):
+                self.head = head
+                self.tail = tail
+                self.line = line
+                self.type = type
+
+        def evaluate(self, indexLevel, line):
+                return "%s, %s" % (
+                        self.head.evaluate(indexLevel, line),
+                        self.tail.evaluate(indexLevel, line))
 
 class CommentNode(Node):
 
@@ -202,10 +265,12 @@ class IfNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                ret = "if (" + self.cond.evaluate(indexLevel, line) + ")"
-                ret += self.caseTrue.evaluate(indexLevel, line)
-                ret += self.caseFalse.evaluate(indexLevel, line)
-                return ret
+                return "%sif (%s)%s%s" % (
+                        "\t" * indexLevel,
+                        self.cond.evaluate(indexLevel, line),
+                        self.caseTrue.evaluate(indexLevel, line),
+                        self.caseFalse.evaluate(indexLevel, line)
+                        )
 
 class ElseNode(Node):
         def __init__(self, content, line):
@@ -214,5 +279,46 @@ class ElseNode(Node):
 
         def evaluate(self, indexLevel, line):
                 return " else " + self.content.evaluate(indexLevel, line)
-                return ret
 
+class WhileNode(Node):
+        def __init__(self, cond, content, line):
+                self.cond = cond
+                self.content = content
+                self.line = line
+
+        def evaluate(self, indexLevel, line):
+                return "%swhile (%s) %s" % (
+                        "\t" * indexLevel,
+                        self.cond.evaluate(indexLevel, line),
+                        self.content.evaluate(indexLevel, line)
+                        )
+
+class ForNode(Node):
+        def __init__(self, init, cond, post, content):
+                self.init = init
+                self.cond = cond
+                self.post = post
+                self.content = content
+                self.line = cond.line
+
+        def evaluate(self, indexLevel, line):
+                return "%sfor (%s; %s; %s) %s" % (
+                        "\t" * indexLevel,
+                        self.init.evaluate(indexLevel, line),
+                        self.cond.evaluate(indexLevel, line),
+                        self.post.evaluate(indexLevel, line),
+                        self.content.evaluate(indexLevel, line)
+                        )
+
+class DoWhileNode(Node):
+        def __init__(self, content, cond, line):
+                self.content = content
+                self.cond = cond
+                self.line = line
+
+        def evaluate(self, indexLevel, line):
+                return "%sdo %s while (%s);" % (
+                        "\t" * indexLevel,
+                        self.content.evaluate(indexLevel, line),
+                        self.cond.evaluate(indexLevel, line)
+                        )

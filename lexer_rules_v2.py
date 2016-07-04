@@ -65,20 +65,22 @@ t_DOT = r"\."
 t_COLON = ":"
 t_SEMICOLON = ";"
 
-t_MULTIPLICACIONESCALAR = "multiplicacionEscalar"
-t_CAPITALIZAR = "capitalizar"
-t_COLINEALES = "colineales"
-t_PRINT = "print"
-t_LENGTH = "length"
-t_IF = "if"
-t_ELSE = "else"
-t_FOR = "for"
-t_WHILE = "while"
-t_DO = "do"
-
-t_BOOL_OP = r"AND|OR"
-t_NOT = 'NOT'
-
+reserved = {
+    'if' : 'IF',
+    'then' : 'THEN',
+    'else' : 'ELSE',
+    'while' : 'WHILE',
+    'for' : 'FOR',
+    'do' : 'DO',
+    'multiplicacionEscalar' : 'MULTIPLICACIONESCALAR',
+    'capitalizar' : 'CAPITALIZAR',
+    'colineales' : 'COLINEALES',
+    'print' : 'PRINT',
+    'length' : 'LENGTH',
+    'OR' : 'BOOL_OP',
+    'AND' : 'BOOL_OP',
+    'NOT' : 'NOT'
+}
 
 types = set(['int', 'float'])
 
@@ -105,8 +107,13 @@ def t_NUMBER(token):
 
 def t_STRING(token):
     r"\".*\""
-    token.value = token.value[1:-1]
+    token.value = {"value": token.value[1:-1], "line": token.lexer.lineno}
+    return token
 
+def t_VAR(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'VAR')    # Check for reserved words
+    return t
 
 def t_NEWLINE(token):
     r"\n+"
@@ -117,7 +124,6 @@ def t_COMMENT(token):
     token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
     return token
 
-# t_VAR = r"[_a-zA-Z][_a-zA-Z0-9]*"
 t_ignore = " \t"
 
 def t_error(token):
