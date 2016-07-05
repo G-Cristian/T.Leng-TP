@@ -63,18 +63,16 @@ if(2+3<4 OR 3>5+4)
 [3][0]++;
 
 a=3;
-#b=a+3;
+b=a+3;
 
 1+ (a=3);
 
 #esto en c++ anda
 c = 1+2< 5 ? b=2 : b = 4;
-
 #mas tests con ?:
 if(3 < 2)
 {
 c = 1+2< 5 ?
-
 b=2 :
              b = 4;
  if(3 < 2)
@@ -91,9 +89,36 @@ b=2 :
  #En nuestro caso no funciona porque pedí que los tipos devueltos sean del mismo tipo.
  #Esto lo hice así porque de otra forma no se que tipo tiene que tener la expresion.
 
-}
-}
+a = 3+c+a+2;
 
+}
+}
+vec0 = [1,2];
+
+vec1 = [[2],[3]];
+#esto no tiene que andar
+#a = 2+vec1[1];
+vec1 = [1,2];
+a = 2+vec1[1];
+vec2 = [[[1]],[[2,3]]];
+vec2[2] = [[2]];
+vec3 = vec2;
+#no tiene que andar porque el vector es de tipo vector de vector y no de tipo numerico
+#vec3[0] = [1];
+vec3[0] = [[1]];
+vec4[5] = [[2]];
+#esto no tiene que andar
+#vec4[0] = 1;
+vec4[0] = [[1]];
+#esto no tiene que andar porque vec5 no esta definido
+#entonces no puede obtener la posicion 1 del algo no definido
+#vec5[0][1] = 1;
+vec5 = [[2]];
+vec5[0][0] = 1;
+#vec5[0] = [1];
+
+vec6 = [[[3]]];
+#vec6[0]=1;
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

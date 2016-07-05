@@ -2,6 +2,15 @@ from lexer_rules_v2 import tokens
 from expressions_v2 import *
 import pdb
 
+variables = {
+}
+
+def getType(ex):
+        if ex.type != 'VAR':
+                return ex.type
+        else:
+                return variables.get(ex.value, 'undef')
+
 class ParserException(Exception):
         def __init__(self, message, line):
                 msg = message
@@ -87,9 +96,13 @@ def p_aritExp(se):
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
-        if isNumeric(ex1.type) and isNumeric(ex2.type):
+
+        type1 = getType(ex1)
+        type2 = getType(ex2)
+
+        if isNumeric(type1) and isNumeric(type2):
                 unifyNumeric(ex1, ex2)
-                se[0] = BinaryOperationNode(ex1, ex2, op, ex1.type, ex1.line)
+                se[0] = BinaryOperationNode(ex1, ex2, op, type2, ex1.line)
         else:
                 raise ParserException("Error de tipos en operador aritmetico binario", ex1.line)
 
@@ -104,9 +117,9 @@ def p_unaryExp(se):
         if op != "+" and op != "-":
                 raise Exception("Error en operador unario")
         else:
-                if isNumeric(ex1.type):
-                        ntype = ex1.type
-                        se[0] = UnaryOperationNode(ex1, op, ntype, ex1.line, True)
+                type1 = getType(ex1)
+                if isNumeric(type1):
+                        se[0] = UnaryOperationNode(ex1, op, type1, ex1.line, True)
                 else:
                         raise ParserException("Error de tipos en operador aritmetico unario",ex1.line)
 
@@ -114,9 +127,9 @@ def p_unaryExp_double(se):
         'unaryExp : DOUBLE_AO unaryExp'
         op1 = se[1]
         ex1 = se[2]
-        if isNumeric(ex1.type):
-                ntype = ex1.type
-                se[0] = UnaryOperationNode(ex1, op1, ntype, ex1.line, True)
+        type1 = getType(ex1)
+        if isNumeric(type1):
+                se[0] = UnaryOperationNode(ex1, op1, type1, ex1.line, True)
         else:
                 raise Exception("Error de tipos en operador aritmetico unario doble")
 
@@ -128,9 +141,10 @@ def p_unaryExp_double2(se):
         'unaryExp2 : unaryExp2 DOUBLE_AO'
         op1 = se[2]
         ex1 = se[1]
-        if isNumeric(ex1.type):
-                ntype = ex1.type
-                se[0] = UnaryOperationNode(ex1, op1, ntype, ex1.line, False)
+        type1 = getType(ex1)
+        
+        if isNumeric(type1):
+                se[0] = UnaryOperationNode(ex1, op1, type1, ex1.line, False)
         else:
                 raise ParserException("Error de tipos en operador aritmetico unario doble", ex1.line)
 
@@ -161,7 +175,8 @@ def p_factorExp_VectorAt(se):
 def p_factorExp_paren(se):
         'factorExp : LPAREN expression RPAREN'
         ex1 = se[2]
-        se[0] = ParenOperationNode(ex1, ex1.type, ex1.line)
+        type1 = getType(ex1)
+        se[0] = ParenOperationNode(ex1, type1, ex1.line)
 
 def p_factorVarExp(se):
         'factorVar : VAR'
@@ -215,7 +230,9 @@ def p_bool_comp(se):
         exp1 = se[1]
         comp = se[2]
         exp2 = se[3]
-        if exp1.type != exp2.type:
+        type1 = getType(exp1)
+        type2 = getType(exp2)
+        if type1 != type2:
                 raise ParserException("Tipos de operandos distintos en comparacion", exp1.line)
         else:
                 se[0] = BooleanCompNode(exp1, comp, exp2, exp1.line)
@@ -252,7 +269,8 @@ def p_vector_items(se):
         # pdb.set_trace()
         unifyNumeric(head, tail)
         checkType(head, tail.type)
-        se[0] = VectorItemsNode(head, tail, head.line, head.type)
+        type1 = getType(head)
+        se[0] = VectorItemsNode(head, tail, head.line, type1)
 
 def p_vector_single_item(se):
         'vector_items : expression'
@@ -264,7 +282,8 @@ def p_vector_at(se):
         index = se[3]
         checkType(vect, "vector")
         checkType(index, "int")
-        se[0] = VectorAtNode(vect, index, vect.line, vect.type)
+        type1 = getType(vect)
+        se[0] = VectorAtNode(vect, index, vect.line, type1)
 
 def p_vector_at_vector(se):
         'expressionVectorAt : expressionVector'
@@ -274,38 +293,71 @@ def p_vector_at_var(se):
         'expressionVectorAt : factorVar'
         se[0] = se[1]
 
+#vectorAt que tiene por lo menos un par de brackets
+def p_varVector_at(se):
+        'expressionVectorVar : expressionVectorAt LBRACKET expression RBRACKET'
+        vect = se[1]
+        index = se[3]
+        type1 = getType(vect)
+        try:
+                checkType(vect, "vector")
+        except :
+                if type1 != 'undef':
+                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector.", vect.line)
+        checkType(index, "int")
+        se[0] = VectorAtNode(vect, index, vect.line, type1)
+
 #asignaciones
 def p_var_equals(se):
         'expressionAssign : factorVar EQUAL expressionAssign'
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
-
-        ex1.type = ex2.type
-        se[0] = AssignOperationNode(ex1, ex2, op, ex1.line)
+        
+        type2 = getType(ex2)
+        if type2 != 'undef':
+                variables[ex1.value] = type2
+                se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+        else:
+                raise ParserException("No se puede asignar una variable sin tipo",ex1.line)
 
 def p_vector_equals(se):
-        'expressionAssign :  expressionVectorAt EQUAL expressionAssign'
+        'expressionAssign :  expressionVectorVar EQUAL expressionAssign'
 
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
 
-        #El vector de expresionVectorAt tiene que ser una variable
-        #Es decir es una variable de tipo vector de algun tipo
-        if isVar(ex1.vect):
-                #si el tipo del vector todavia no se asigno lo va a asignar al tipo de la derecha.
-                #si es del mismo tipo hace lo mismo.
-                if checkType(ex1, 'VAR') or checkType(ex1, ex2.type):
-                        ex1.type[0] = ex2.type
-                        se[0] = AssignOperationNode(ex1, ex2, op, line)
-                else:
-                        #si es de otro tipo entonces no se puede hacer la asignacion
-                        ParserException("No se puede asignar el tipo " + str(exp2.type) + " a vector de tipo " + str(exp1.type), exp1.line)
-        else:
-                ParserException("El vector no es una variable.", exp1.line)
+        type1 = getType(ex1)
+        type2 = getType(ex2)
+        #Lo de la derecha tiene que estar definido
+        if type2 != 'undef':
+                #El vector de expresionVectorAt tiene que ser una variable
+                #Es decir es una variable de tipo vector de algun tipo
+                if vectorIsVar(ex1.vect):
+                        vect = getVector(ex1)
+                        #si el tipo del vector todavia no se asigno lo va a asignar al tipo de la derecha.
+                        #si es del mismo tipo hace lo mismo.
+                        if type1 == 'undef' or type1 == type2:
+                                #si el tipo de la derecha es un vector
+                                #tengo que hacer que la variable sea un vector de vectores
+                                if isTuple(type2):
+                                        #me paro en el nombre del vector
+                                        variables[vect.value] = (type2[0],type2[1]+1)
+                                else:
+                                        #me paro en el nombre del vector
+                                        variables[vect.value] = (type2,1)
 
-def p_assign_BoolOp(se):
+                                se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                        else:
+                                #si es de otro tipo entonces no se puede hacer la asignacion
+                                raise ParserException("No se puede asignar el tipo " + str(ex2.type) + " a vector de tipo " + str(ex1.type), ex1.line)
+                else:
+                        raise ParserException("El vector no es una variable.", ex1.line)
+        else:
+                raise ParserException("No se puede asignar una variable sin tipo",ex1.line)
+
+def p_assign_TernaryCond(se):
         'expressionAssign : expressionTernaryCond'
         se[0] = se[1]
 
@@ -382,7 +434,7 @@ def p_ternaryConditiopnal(se):
         caseFalse = se[5]
         checkType(cond, 'bool')
         checkType(caseTrue, caseFalse.type)
-        se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, cond.line)
+        se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, caseTrue.type, cond.line)
         
 def p_ternaryConditiopnal_BoolOp(se):
         'expressionTernaryCond : expressionBoolOp'
@@ -425,8 +477,29 @@ def unifyNumeric(a, b):
 
 def checkType(elem, type):
         # pdb.set_trace()
-        if (type != "vector" and elem.type != type) or (type == "vector" and not isTuple(elem.type)) :
-                raise Exception("Error de tipos: se esperaba %s y se encontro %s" % (type, elem.type))
+        typeToCheck = elem.type
+        if elem.type == 'VAR':
+                typeToCheck = getType(elem)
+        if (type != "vector" and typeToCheck != type) or (type == "vector" and not isTuple(typeToCheck)) :
+                raise Exception("Error de tipos: se esperaba %s y se encontro %s" % (type, typeToCheck))
+
+def getVector(vec):
+        if vec.__class__.__name__ == 'VectorNode' or vec.__class__.__name__ == 'VarNode':
+                return vec
+        else:
+                if vec.__class__.__name__ != 'VectorAtNode':
+                        raise Exception("No se puede consegir un vector de algo que no es un 'VectorNode' ni un 'VarNode' ni un 'VectorAtNode'" + vec.__class__.__name__)
+                else:
+                        return getVector(vec.vect)
+
+def vectorIsVar(vec):
+        if vec.type == 'VAR':
+                return True
+        else:
+                if vec.__class__.__name__ != 'VectorAtNode':
+                        return False
+                else:
+                        return vectorIsVar(vec.vect)
 
 def p_error(token):
         message = "[Syntax error]"

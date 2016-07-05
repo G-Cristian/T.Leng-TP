@@ -9,6 +9,7 @@ class Node(object):
 class EmptyNode(Node):
         def __init__(self):
                 self.type = 'empty'
+
         def evaluate(self, indexLevel, line):
                 return ""
 
@@ -213,9 +214,11 @@ class VectorAtNode(Node):
                 self.vect = vect
                 self.index = index
                 self.line = line
-                self.type = (type[0], type[1]-1)
-                if self.type[1] == 0:
-                        self.type = self.type[0]
+                self.type = type
+                if type != 'undef':
+                        self.type = (type[0], type[1]-1)
+                        if self.type[1] == 0:
+                                self.type = self.type[0]
 
         def evaluate(self, indexLevel, line):
                 return "%s[%s]" % (
@@ -224,11 +227,11 @@ class VectorAtNode(Node):
 
 class AssignOperationNode(Node):
 
-	def __init__(self, left, right, operator, line):
+	def __init__(self, left, right, operator, type, line):
 		self.left = left
 		self.right = right
 		self.operator = operator
-		self.type = right.type
+		self.type = type
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
@@ -348,12 +351,12 @@ class ElseNode(Node):
                         self.content.evaluate(indexLevel + 1, line))
 
 class TernaryConditionalNode:
-        def __init__(self, cond, caseTrue, caseFalse, line):
+        def __init__(self, cond, caseTrue, caseFalse, type, line):
                 self.cond = cond
                 self.caseTrue = caseTrue
                 self.caseFalse = caseFalse
                 self.line = line
-                self.type = caseTrue.type
+                self.type = type
 
         def evaluate(self, indexLevel, line):
                 return "%s%s ? %s : %s" % (
