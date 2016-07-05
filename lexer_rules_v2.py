@@ -1,3 +1,4 @@
+# import pdb
 tokens = [
     # aritmeticos
     'AO',
@@ -27,8 +28,6 @@ tokens = [
     'NUMBER',
     # Cadenas
     'STRING',
-    # variables
-    'VAR',
     # funciones
     'MULTIPLICACIONESCALAR',
     'CAPITALIZAR',
@@ -37,14 +36,22 @@ tokens = [
     'LENGTH',
     # condicional
     'IF',
+    'ELSE',
     # bucles
     'FOR',
     'WHILE',
-    'DO'
+    'DO',
+    # booleans
+    'TRUE',
+    'FALSE',
+    'BOOL_OP',
+    'NOT',
+    # variables
+    'VAR'
 ]
 
 t_AO = r"[\+\-\*/\^%]"
-t_DOUBLE_AO = r"\+\+|\-\-"
+t_DOUBLE_AO = r"(\+\+)|(\-\-)"
 t_EQUAL = "="
 t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
@@ -58,18 +65,34 @@ t_DOT = r"\."
 t_COLON = ":"
 t_SEMICOLON = ";"
 
-t_VAR = r"[_a-zA-Z][_a-zA-Z0-9]*"
-t_MULTIPLICACIONESCALAR = "multiplicacionEscalar"
-t_CAPITALIZAR = "capitalizar"
-t_COLINEALES = "colineales"
-t_PRINT = "print"
-t_LENGTH = "length"
-t_IF = "if"
-t_FOR = "for"
-t_WHILE = "while"
-t_DO = "do"
+reserved = {
+    'if' : 'IF',
+    'then' : 'THEN',
+    'else' : 'ELSE',
+    'while' : 'WHILE',
+    'for' : 'FOR',
+    'do' : 'DO',
+    'multiplicacionEscalar' : 'MULTIPLICACIONESCALAR',
+    'capitalizar' : 'CAPITALIZAR',
+    'colineales' : 'COLINEALES',
+    'print' : 'PRINT',
+    'length' : 'LENGTH',
+    'OR' : 'BOOL_OP',
+    'AND' : 'BOOL_OP',
+    'NOT' : 'NOT'
+}
 
 types = set(['int', 'float'])
+
+def t_TRUE(token):
+    "true"
+    token.value = {"value": token.value, "line": token.lexer.lineno}
+    return token
+
+def t_FALSE(token):
+    "false"
+    token.value = {"value": token.value, "line": token.lexer.lineno}
+    return token
 
 def t_NUMBER(token):
     r"[0-9]+(\.[0-9]+)?"
@@ -84,17 +107,26 @@ def t_NUMBER(token):
 
 def t_STRING(token):
     r"\".*\""
-    token.value = token.value[1:-1]
+    token.value = {"value": token.value[1:-1], "line": token.lexer.lineno}
+    return token
 
+def t_VAR(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'VAR')    # Check for reserved words
+
+    if t.type == 'VAR':
+        t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}
+
+    return t
 
 def t_NEWLINE(token):
-	r"\n+"
-	token.lexer.lineno += len(token.value)
+    r"\n+"
+    token.lexer.lineno += len(token.value)
 
 def t_COMMENT(token):
-	r"\#.*"
-	token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
-	return token
+    r"\#.*"
+    token.value = {"value":token.value.strip(), "line":token.lexer.lineno }
+    return token
 
 t_ignore = " \t"
 
