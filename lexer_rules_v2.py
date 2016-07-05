@@ -22,6 +22,7 @@ tokens = [
     'DOT',
     'COLON',
     'SEMICOLON',
+    'QUESTION',
     # Comentario
     'COMMENT',
     # Number,
@@ -64,6 +65,7 @@ t_COMMA = ","
 t_DOT = r"\."
 t_COLON = ":"
 t_SEMICOLON = ";"
+t_QUESTION = "\?"
 
 reserved = {
     'if' : 'IF',

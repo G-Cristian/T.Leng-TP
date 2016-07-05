@@ -209,7 +209,7 @@ class CommentNode(Node):
 		self.comment = comment
 		self.code = code
 		self.line = line
-                self.type = 'comment'
+		self.type = 'comment'
 
 	def evaluate(self, indexLevel, line, hasComment = False):
                 return  "%s%s\n%s" % (
@@ -242,7 +242,7 @@ class CodeNode(Node):
 		self.statement = statement
 		self.code = code
 		self.line = line
-                self.type = 'code'
+		self.type = 'code'
 
 	def evaluate(self, indexLevel, line):
                 hasComment = (self.code.type == 'comment' and self.code.line == self.statement.line)
@@ -261,7 +261,7 @@ class StatementNode(Node):
 		self.expression = expression
 		# self.comments = comments
 		self.line = line
-                self.type = 'statement'
+		self.type = 'statement'
 
 	def evaluate(self, indexLevel, line):
                 return "%s%s;" % (
