@@ -25,7 +25,7 @@ true AND (  false OR     true);
 
 while ( 1 < (2 + 3)   )
 
-
+#comentario dentro del while
 3;
 # digo 3
 while ( 5 == 2   ) {

@@ -277,8 +277,8 @@ class BlockNode(Node):
 
         def evaluate(self, indexLevel, line):
                 ret = "{\n%s%s}" % (
-                        self.code.evaluate(indexLevel + 1, self.line),
-                        "\t" * indexLevel)
+                        self.code.evaluate(indexLevel, self.line),
+                        "\t" * (indexLevel - 1))
 
                 return ret
 
@@ -293,8 +293,8 @@ class IfNode(Node):
                 return "%sif (%s)%s%s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
-                        "\n\t" if (self.caseTrue.type == 'statement') else "",
-                        self.caseTrue.evaluate(indexLevel, line),
+                        "\n" if (self.caseTrue.type == 'statement' or self.caseTrue.type == 'comment') else "",
+                        self.caseTrue.evaluate(indexLevel + 1, line),
                         self.caseFalse.evaluate(indexLevel, line)
                         )
 
@@ -306,8 +306,8 @@ class ElseNode(Node):
 
         def evaluate(self, indexLevel, line):
                 return " else %s%s" % (
-                        "\n\t" if (self.content.type == 'statement') else "",
-                        self.content.evaluate(indexLevel, line))
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        self.content.evaluate(indexLevel + 1, line))
 
 class WhileNode(Node):
         def __init__(self, cond, content, line):
@@ -319,8 +319,8 @@ class WhileNode(Node):
                 return "%swhile (%s) %s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
-                        "\n\t" if (self.content.type == 'statement') else "",
-                        self.content.evaluate(indexLevel, line)
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        self.content.evaluate(indexLevel + 1, line)
                         )
 
 class ForNode(Node):
@@ -337,8 +337,8 @@ class ForNode(Node):
                         self.init.evaluate(indexLevel, line),
                         self.cond.evaluate(indexLevel, line),
                         self.post.evaluate(indexLevel, line),
-                        "\n\t" if (self.content.type == 'statement') else "",
-                        self.content.evaluate(indexLevel, line)
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        self.content.evaluate(indexLevel + 1, line)
                         )
 
 class DoWhileNode(Node):
@@ -350,8 +350,8 @@ class DoWhileNode(Node):
         def evaluate(self, indexLevel, line):
                 return "%sdo %s%s%swhile (%s);" % (
                         "\t" * indexLevel,
-                        "\n\t" if (self.content.type == 'statement') else "",
-                        self.content.evaluate(indexLevel, line),
-                        "\n\t" if (self.content.type == 'statement') else " ",
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        self.content.evaluate(indexLevel + 1, line),
+                        "\n\t" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.cond.evaluate(indexLevel, line)
                         )
