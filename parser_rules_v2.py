@@ -31,10 +31,9 @@ def p_code_empty(se):
         se[0] = EmptyNode()
 #statements
 def p_statement_1(se):
-        'statement : expression SEMICOLON comments'
-        ex1 = se[1]
-        ex2 = se[3]
-        se[0] = ExpressionStatementNode(ex1, ex2, ex1.line)
+        'statement : expression SEMICOLON'
+        exp = se[1]
+        se[0] = StatementNode(exp, exp.line)
 
 def p_statement_block(se):
         'statement : block'
@@ -343,10 +342,24 @@ def p_block(se):
         code = se[2]
         se[0] = BlockNode(code, code.line)
 
+# Single Statements
+def p_single_statement_block(se):
+        'singleStatement : block'
+        se[0] = se[1]
+
+def p_single_statement_comment(se):
+        'singleStatement : COMMENT singleStatement'
+        comm = se[1]
+        se[0] = CommentNode(comm["value"], se[2], comm["line"])
+
+def p_single_statement(se):
+        'singleStatement : statement'
+        se[0] = se[1]
+
 # Conditional
 
 def p_if(se):
-        'if : IF LPAREN expression RPAREN statement else'
+        'if : IF LPAREN expression RPAREN singleStatement else'
         cond = se[3]
         checkType(cond, 'bool')
         caseTrue = se[5]
@@ -354,7 +367,7 @@ def p_if(se):
         se[0] = IfNode(cond, caseTrue, caseFalse, cond.line)
 
 def p_else(se):
-        'else : ELSE statement'
+        'else : ELSE singleStatement'
         se[0] = ElseNode(se[2], se[2].line)
 
 def p_else_empty(se):
@@ -363,14 +376,14 @@ def p_else_empty(se):
 
 # Loops
 def p_while(se):
-        'while : WHILE LPAREN expression RPAREN statement'
+        'while : WHILE LPAREN expression RPAREN singleStatement'
         cond = se[3]
         checkType(cond, 'bool')
         statement = se[5]
         se[0] = WhileNode(cond, statement, cond.line)
 
 def p_for(se):
-        'for : FOR LPAREN optional_expr SEMICOLON expression SEMICOLON optional_expr RPAREN statement '
+        'for : FOR LPAREN optional_expr SEMICOLON expression SEMICOLON optional_expr RPAREN singleStatement'
         init = se[3]
         cond = se[5]
         checkType(cond, 'bool')
@@ -379,7 +392,7 @@ def p_for(se):
         se[0] = ForNode(init, cond, post, content)
 
 def p_do_while(se):
-        'do_while : DO statement WHILE LPAREN expression RPAREN SEMICOLON'
+        'do_while : DO singleStatement WHILE LPAREN expression RPAREN SEMICOLON'
         statement = se[2]
         cond = se[5]
         checkType(cond, 'bool')
