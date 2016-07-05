@@ -274,6 +274,8 @@ def p_vector_items(se):
 
 def p_vector_single_item(se):
         'vector_items : expression'
+        if se[1].type == 'VAR':
+                raise ParserException("Variable no asignada", se[1].line)
         se[0] = se[1]
 
 def p_vector_at(se):
@@ -339,14 +341,29 @@ def p_vector_equals(se):
                         #si el tipo del vector todavia no se asigno lo va a asignar al tipo de la derecha.
                         #si es del mismo tipo hace lo mismo.
                         if type1 == 'undef' or type1 == type2:
+                                newType = 'undef'
+                                currentVectorLevel = 0
+                                if isTuple(type2):
+                                        newType = type2[0]
+                                        currentVectorLevel = type2[1]
+                                else:
+                                        newType = type2
+
+                                currentVectorLevel1 = 0
+                                typeOfVector = getType(vect)
+                                if typeOfVector != 'undef':
+                                        currentVectorLevel = typeOfVector[1] - 1
+                                        
+                                variables[vect.value] = (newType,1+currentVectorLevel)
+                                        
                                 #si el tipo de la derecha es un vector
                                 #tengo que hacer que la variable sea un vector de vectores
-                                if isTuple(type2):
+#                                if isTuple(type2):
                                         #me paro en el nombre del vector
-                                        variables[vect.value] = (type2[0],type2[1]+1)
-                                else:
+ #                                       variables[vect.value] = (type2[0],type2[1]+1+currentVectorLevel)
+  #                              else:
                                         #me paro en el nombre del vector
-                                        variables[vect.value] = (type2,1)
+   #                                     variables[vect.value] = (type2,1)
 
                                 se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
                         else:

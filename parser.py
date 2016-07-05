@@ -115,10 +115,18 @@ vec4[0] = [[1]];
 #vec5[0][1] = 1;
 vec5 = [[2]];
 vec5[0][0] = 1;
-#vec5[0] = [1];
+vec5[0] = [1];
 
 vec6 = [[[3]]];
-#vec6[0]=1;
+vec6[0][0]=[1];
+vec2=1;
+#No tiene que andarr ya que vec2 ahora es de tipo numerico
+#vec2[0] = 2;
+
+#los siguientes tres no deben andar
+#vec7 = [h, 1];
+#vec7 = [1,h];
+#vec7 = [h];
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
