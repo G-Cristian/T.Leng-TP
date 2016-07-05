@@ -31,10 +31,9 @@ def p_code_empty(se):
         se[0] = EmptyNode()
 #statements
 def p_statement_1(se):
-        'statement : expression SEMICOLON comments'
-        ex1 = se[1]
-        ex2 = se[3]
-        se[0] = ExpressionStatementNode(ex1, ex2, ex1.line)
+        'statement : expression SEMICOLON'
+        exp = se[1]
+        se[0] = StatementNode(exp, exp.line)
 
 def p_statement_block(se):
         'statement : block'

@@ -8,7 +8,7 @@ class Node(object):
 
 class EmptyNode(Node):
         def __init__(self):
-                return
+                self.type = 'empty'
         def evaluate(self, indexLevel, line):
                 return ""
 
@@ -209,10 +209,13 @@ class CommentNode(Node):
 		self.comment = comment
 		self.code = code
 		self.line = line
-                
-	def evaluate(self, indexLevel, line):
-                ret = "\t" * indexLevel + self.comment + "\n"
-                ret += self.code.evaluate(indexLevel, line)
+                self.type = 'comment'
+
+	def evaluate(self, indexLevel, line, hasComment = False):
+                return  "%s%s\n%s" % (
+                        "" if hasComment else "\t" * indexLevel,
+                        self.comment,
+                        self.code.evaluate(indexLevel, line))
 
                 # pdb.set_trace()
                 return ret
@@ -239,42 +242,43 @@ class CodeNode(Node):
 		self.statement = statement
 		self.code = code
 		self.line = line
+                self.type = 'code'
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                # for x in range(0, indexLevel):
-                #         ret += "a"
-                ret += self.statement.evaluate(indexLevel, self.line)
-                ret += self.code.evaluate(indexLevel, self.line)
+                hasComment = (self.code.type == 'comment' and self.code.line == self.statement.line)
+                evalCode = ""
+                if hasComment:
+                        evalCode = self.code.evaluate(indexLevel, self.line, hasComment)
+                else:
+                        evalCode = self.code.evaluate(indexLevel, self.line)
+                return  "%s%s%s" % (self.statement.evaluate(indexLevel, self.line),
+                        " " if hasComment else "\n",
+                        evalCode)
 
-                return ret
 
-class ExpressionStatementNode(Node):
-	def __init__(self, expression, comments, line):
+class StatementNode(Node):
+	def __init__(self, expression, line):
 		self.expression = expression
-		self.comments = comments
+		# self.comments = comments
 		self.line = line
+                self.type = 'statement'
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                for x in range(0, indexLevel):
-                        ret += "\t"
-                ret += self.expression.evaluate(indexLevel, self.line)
-                ret+=";"
-                # ret += self.comments.evaluate(indexLevel, self.line)
-                ret+="\n"
-
-                return ret
+                return "%s%s;" % (
+                        "\t" * indexLevel,
+                        self.expression.evaluate(indexLevel, self.line)
+                        )
 
 class BlockNode(Node):
         def __init__(self, code, line):
                 self.code = code
                 self.line = line
+                self.type = 'block'
 
         def evaluate(self, indexLevel, line):
-                ret = "{\n"
-                ret += self.code.evaluate(indexLevel + 1, self.line)
-                ret += "\t" * indexLevel + "} \n"
+                ret = "{\n%s%s}" % (
+                        self.code.evaluate(indexLevel + 1, self.line),
+                        "\t" * indexLevel)
 
                 return ret
 
@@ -286,9 +290,10 @@ class IfNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                return "%sif (%s)%s%s" % (
+                return "%sif (%s)%s%s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
+                        "\n\t" if (self.caseTrue.type == 'statement') else "",
                         self.caseTrue.evaluate(indexLevel, line),
                         self.caseFalse.evaluate(indexLevel, line)
                         )
@@ -297,9 +302,12 @@ class ElseNode(Node):
         def __init__(self, content, line):
                 self.content = content
                 self.line = line
+                self.type = 'else'
 
         def evaluate(self, indexLevel, line):
-                return " else " + self.content.evaluate(indexLevel, line)
+                return " else %s%s" % (
+                        "\n\t" if (self.content.type == 'statement') else "",
+                        self.content.evaluate(indexLevel, line))
 
 class WhileNode(Node):
         def __init__(self, cond, content, line):
@@ -308,9 +316,10 @@ class WhileNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                return "%swhile (%s) %s" % (
+                return "%swhile (%s) %s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
+                        "\n\t" if (self.content.type == 'statement') else "",
                         self.content.evaluate(indexLevel, line)
                         )
 
@@ -323,11 +332,12 @@ class ForNode(Node):
                 self.line = cond.line
 
         def evaluate(self, indexLevel, line):
-                return "%sfor (%s; %s; %s) %s" % (
+                return "%sfor (%s; %s; %s) %s%s" % (
                         "\t" * indexLevel,
                         self.init.evaluate(indexLevel, line),
                         self.cond.evaluate(indexLevel, line),
                         self.post.evaluate(indexLevel, line),
+                        "\n\t" if (self.content.type == 'statement') else "",
                         self.content.evaluate(indexLevel, line)
                         )
 
@@ -338,8 +348,10 @@ class DoWhileNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                return "%sdo %s while (%s);\n" % (
+                return "%sdo %s%s%swhile (%s);" % (
                         "\t" * indexLevel,
+                        "\n\t" if (self.content.type == 'statement') else "",
                         self.content.evaluate(indexLevel, line),
+                        "\n\t" if (self.content.type == 'statement') else " ",
                         self.cond.evaluate(indexLevel, line)
                         )

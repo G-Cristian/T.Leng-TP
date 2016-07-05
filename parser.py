@@ -6,12 +6,11 @@ from ply.yacc import yacc
 lexer = lex(module=lexer_rules_v2)
 parser = yacc(module=parser_rules_v2)
 text = """
-{
+#comment inicial
+if (1<2) {
 # un comentario
 if (  (NOT true) OR false ){
 1+2; 3    *4; #holaaa
-  {
-  111;}
 }
 else
 { 0; }
@@ -26,14 +25,17 @@ true AND (  false OR     true);
 
 while ( 1 < (2 + 3)   )
 
-{
-# digo 3
+
 3;
+# digo 3
+while ( 5 == 2   ) {
+3; "un string";
 }
 for (; true; 5           ) {6        ;}
-
+for (; true; 5           ) 6 ;
 do { 1+2+2; } while (NOT true);
-}
+do 1; while(true);
+}1;
 #un vector
 [true, false, true   ][0] OR true;
 
