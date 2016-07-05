@@ -347,6 +347,22 @@ class ElseNode(Node):
                         "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
                         self.content.evaluate(indexLevel + 1, line))
 
+class TernaryConditionalNode:
+        def __init__(self, cond, caseTrue, caseFalse, line):
+                self.cond = cond
+                self.caseTrue = caseTrue
+                self.caseFalse = caseFalse
+                self.line = line
+                self.type = caseTrue.type
+
+        def evaluate(self, indexLevel, line):
+                return "%s%s ? %s : %s" % (
+                        "\t" * indexLevel,
+                        self.cond.evaluate(indexLevel, line),
+                        self.caseTrue.evaluate(indexLevel, line),
+                        self.caseFalse.evaluate(indexLevel, line)
+                        )
+
 class WhileNode(Node):
         def __init__(self, cond, content, line):
                 self.cond = cond

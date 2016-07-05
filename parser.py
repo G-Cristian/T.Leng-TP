@@ -65,6 +65,35 @@ if(2+3<4 OR 3>5+4)
 a=3;
 #b=a+3;
 
+1+ (a=3);
+
+#esto en c++ anda
+c = 1+2< 5 ? b=2 : b = 4;
+
+#mas tests con ?:
+if(3 < 2)
+{
+c = 1+2< 5 ?
+
+b=2 :
+             b = 4;
+ if(3 < 2)
+
+  {
+ c = (1+2< 5 ? true : false) ? 2<3 ?
+               b =3 :
+               5+4 : 2>3 ? 3 : b =2;
+ #En cambio lo siguiente no funciona por la forma en que asocia.
+ #c = 1+2< 5 ? true : false ? 2<3 ?
+ #              b =3 :
+ #              5+4 : 2>3 ? 3 : b =2;
+ #Notar que en c++ anda pero porque devuelve true y lo transforma en int.
+ #En nuestro caso no funciona porque pedí que los tipos devueltos sean del mismo tipo.
+ #Esto lo hice así porque de otra forma no se que tipo tiene que tener la expresion.
+
+}
+}
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

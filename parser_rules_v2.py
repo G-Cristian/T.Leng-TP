@@ -306,7 +306,7 @@ def p_vector_equals(se):
                 ParserException("El vector no es una variable.", exp1.line)
 
 def p_assign_BoolOp(se):
-        'expressionAssign : expressionBoolOp'
+        'expressionAssign : expressionTernaryCond'
         se[0] = se[1]
 
 # Registros
@@ -373,6 +373,20 @@ def p_else(se):
 def p_else_empty(se):
         'else : '
         se[0] = EmptyNode()
+
+#ternary conditional
+def p_ternaryConditiopnal(se):
+        'expressionTernaryCond : expressionBoolOp QUESTION expression COLON expression'
+        cond = se[1]
+        caseTrue = se[3]
+        caseFalse = se[5]
+        checkType(cond, 'bool')
+        checkType(caseTrue, caseFalse.type)
+        se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, cond.line)
+        
+def p_ternaryConditiopnal_BoolOp(se):
+        'expressionTernaryCond : expressionBoolOp'
+        se[0] = se[1]
 
 # Loops
 def p_while(se):
