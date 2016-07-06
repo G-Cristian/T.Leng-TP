@@ -28,9 +28,6 @@ class VarNode(Node):
 
                 return ret
 
-def isVar(t):
-        return t.__class__.__name__ == "VarNode"
-
 class NumberNode(Node):
 
 	def __init__(self, value, nType, line):
@@ -412,3 +409,21 @@ class DoWhileNode(Node):
                         "\n\t" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.cond.evaluate(indexLevel, line)
                         )
+
+class ScalarMultiplicationNode(Node):
+        def __init__(self, arg1, arg2, arg3, line):
+                self.arg1 = arg1
+                self.arg2 = arg2
+                self.arg3 = arg3
+                if arg3 == "":
+                        self.arg3 = None
+                self.line = line
+                self.type = arg1.type
+
+        def evaluate(self, indexLevel, line):
+                arg3 = ""
+                if self.arg3 is not None:
+                        arg3 = ", " + self.arg3.evaluate(indexLevel, line)
+                return "multiplicacionEscalar(%s, %s%s)" % (    self.arg1.evaluate(indexLevel, line),
+                                                                self.arg2.evaluate(indexLevel, line),
+                                                                arg3)

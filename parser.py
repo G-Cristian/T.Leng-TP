@@ -127,6 +127,11 @@ vec2=1;
 #vec7 = [h, 1];
 #vec7 = [1,h];
 #vec7 = [h];
+
+#sin tercer parametro
+multiplicacionEscalar([2], 3);
+multiplicacionEscalar([2], 3, false);#con tercer parametro
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

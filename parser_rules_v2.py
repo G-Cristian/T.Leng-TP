@@ -178,6 +178,10 @@ def p_factorExp_paren(se):
         type1 = getType(ex1)
         se[0] = ParenOperationNode(ex1, type1, ex1.line)
 
+def p_factorExp_function(se):
+        'factorExp : expressionFunction'
+        se[0] = se[1]
+
 def p_factorVarExp(se):
         'factorVar : VAR'
         se[0] = VarNode(se[1]["value"],se[1]["line"])
@@ -481,6 +485,37 @@ def p_do_while(se):
         checkType(cond, 'bool')
         se[0] = DoWhileNode(statement, cond, statement.line)
 
+
+#funciones
+def p_multiplicacionEscalar_1(se):
+        'expressionFunction : MULTIPLICACIONESCALAR LPAREN expression COMMA expression RPAREN'
+        function = se[1]
+        ex1 = se[3]
+        ex2 = se[5]
+        checkType(ex1, "vector")
+        if not isNumeric(getType(ex1)[0]):
+                raise ParserException("Se esperaba un vector numerico en el primer parametro de multiplicacionEscalar",ex1.line)
+        if not isNumeric(getType(ex2)):
+                raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
+
+        se[0] = ScalarMultiplicationNode(ex1, ex2, None, ex1.line)
+
+def p_multiplicacionEscalar_2(se):
+        'expressionFunction : MULTIPLICACIONESCALAR LPAREN expression COMMA expression COMMA expression RPAREN'
+        function = se[1]
+        ex1 = se[3]
+        ex2 = se[5]
+        ex3 = se[7]
+        checkType(ex1, "vector")
+        if not isNumeric(getType(ex1)[0]):
+                raise ParserException("Se esperaba un vector numerico en el primer parametro de multiplicacionEscalar",ex1.line)
+        if not isNumeric(getType(ex2)):
+                raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
+
+        checkType(ex3, "bool")
+        se[0] = ScalarMultiplicationNode(ex1, ex2, ex3, ex1.line)
+
+#auxiliares
 def isNumeric(nType):
         return nType == "float" or nType == "int"
 
