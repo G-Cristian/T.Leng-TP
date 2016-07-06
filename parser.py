@@ -86,8 +86,8 @@ b=2 :
  #              b =3 :
  #              5+4 : 2>3 ? 3 : b =2;
  #Notar que en c++ anda pero porque devuelve true y lo transforma en int.
- #En nuestro caso no funciona porque pedí que los tipos devueltos sean del mismo tipo.
- #Esto lo hice así porque de otra forma no se que tipo tiene que tener la expresion.
+ #En nuestro caso no funciona porque pedi que los tipos devueltos sean del mismo tipo.
+ #Esto lo hice asi porque de otra forma no se que tipo tiene que tener la expresion.
 
 a = 3+c+a+2;
 

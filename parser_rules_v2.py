@@ -142,7 +142,7 @@ def p_unaryExp_double2(se):
         op1 = se[2]
         ex1 = se[1]
         type1 = getType(ex1)
-        
+
         if isNumeric(type1):
                 se[0] = UnaryOperationNode(ex1, op1, type1, ex1.line, False)
         else:
@@ -152,9 +152,9 @@ def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
         se[0] = se[1]
 
-def p_factorExp_Var(se):
-        'factorExp : factorVar'
-        se[0] = se[1]
+# def p_factorExp_Var(se):
+#         'factorExp : factorVar'
+#         se[0] = se[1]
 
 def p_factorExp_Num(se):
         'factorExp : factorNumExp'
@@ -164,9 +164,9 @@ def p_factorExp_Bool(se):
         'factorExp : bool_atom'
         se[0] = se[1]
 
-def p_factorExp_Vector(se):
-        'factorExp : expressionVector'
-        se[0] = se[1]
+# def p_factorExp_Vector(se):
+#         'factorExp : expressionVector'
+#         se[0] = se[1]
 
 def p_factorExp_VectorAt(se):
         'factorExp : expressionVectorAt'
@@ -319,7 +319,7 @@ def p_var_equals(se):
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
-        
+
         type2 = getType(ex2)
         if type2 != 'undef':
                 variables[ex1.value] = type2
@@ -357,9 +357,9 @@ def p_vector_equals(se):
                                 typeOfVector = getType(vect)
                                 if typeOfVector != 'undef':
                                         currentVectorLevel = typeOfVector[1] - 1
-                                        
+
                                 variables[vect.value] = (newType,1+currentVectorLevel)
-                                        
+
                                 #si el tipo de la derecha es un vector
                                 #tengo que hacer que la variable sea un vector de vectores
 #                                if isTuple(type2):
@@ -416,9 +416,9 @@ def p_block(se):
         se[0] = BlockNode(code, code.line)
 
 # Single Statements
-def p_single_statement_block(se):
-        'singleStatement : block'
-        se[0] = se[1]
+# def p_single_statement_block(se):
+#         'singleStatement : block'
+#         se[0] = se[1]
 
 def p_single_statement_comment(se):
         'singleStatement : COMMENT singleStatement'
@@ -456,7 +456,7 @@ def p_ternaryConditiopnal(se):
         checkType(cond, 'bool')
         checkType(caseTrue, caseFalse.type)
         se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, caseTrue.type, cond.line)
-        
+
 def p_ternaryConditiopnal_BoolOp(se):
         'expressionTernaryCond : expressionBoolOp'
         se[0] = se[1]
