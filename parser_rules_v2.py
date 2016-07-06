@@ -487,33 +487,72 @@ def p_do_while(se):
 
 
 #funciones
-def p_multiplicacionEscalar_1(se):
+def p_scalarMultiplication_1(se):
         'expressionFunction : MULTIPLICACIONESCALAR LPAREN expression COMMA expression RPAREN'
         function = se[1]
         ex1 = se[3]
         ex2 = se[5]
         checkType(ex1, "vector")
-        if not isNumeric(getType(ex1)[0]):
+        if not isNumeric(getType(ex1)[0]) or getType(ex1)[1] != 1:
                 raise ParserException("Se esperaba un vector numerico en el primer parametro de multiplicacionEscalar",ex1.line)
         if not isNumeric(getType(ex2)):
                 raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
 
         se[0] = ScalarMultiplicationNode(ex1, ex2, None, ex1.line)
 
-def p_multiplicacionEscalar_2(se):
+def p_scalarMultiplication_2(se):
         'expressionFunction : MULTIPLICACIONESCALAR LPAREN expression COMMA expression COMMA expression RPAREN'
         function = se[1]
         ex1 = se[3]
         ex2 = se[5]
         ex3 = se[7]
         checkType(ex1, "vector")
-        if not isNumeric(getType(ex1)[0]):
+        if not isNumeric(getType(ex1)[0]) or getType(ex1)[1] != 1:
                 raise ParserException("Se esperaba un vector numerico en el primer parametro de multiplicacionEscalar",ex1.line)
         if not isNumeric(getType(ex2)):
                 raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
 
         checkType(ex3, "bool")
         se[0] = ScalarMultiplicationNode(ex1, ex2, ex3, ex1.line)
+
+def p_capitalize(se):
+        'expressionFunction : CAPITALIZAR LPAREN expression RPAREN'
+
+        ex1 = se[3]
+        checkType(ex1, 'str')
+
+        se[0] = CapitalizeNode(ex1, ex1.line)
+
+def p_collinear(se):
+        'expressionFunction : COLINEALES LPAREN expression COMMA expression RPAREN'
+        ex1 = se[3]
+        ex2 = se[5]
+        checkType(ex1, "vector")
+        if not isNumeric(getType(ex1)[0]) or getType(ex1)[1] != 1:
+                raise ParserException("Se esperaba un vector numerico en el primer parametro de colineales",ex1.line)
+
+        checkType(ex2, "vector")
+        if not isNumeric(getType(ex2)[0]) or getType(ex2)[1] != 1:
+                raise ParserException("Se esperaba un vector numerico en el segundo parametro de colineales",ex2.line)
+
+        se[0] = CollinearNode(ex1, ex2, ex1.line)
+
+def p_print(se):
+        'expressionFunction : PRINT LPAREN expression RPAREN'
+        ex1 = se[3]
+        se[0] = PrintNode(ex1, ex1.line)
+
+def p_length(se):
+        'expressionFunction : LENGTH LPAREN expression RPAREN'
+        ex1 = se[3]
+        type1 = getType(ex1)
+        try:
+                checkType(ex1, "vector")
+        except :
+                if type1 != 'str':
+                        raise ParserException("length recibe un vector o una cadena.", ex1.line)
+
+        se[0] = LengthNode(ex1, ex1.line)
 
 #auxiliares
 def isNumeric(nType):

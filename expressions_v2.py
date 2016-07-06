@@ -326,6 +326,7 @@ class IfNode(Node):
                 self.caseTrue = caseTrue
                 self.caseFalse = caseFalse
                 self.line = line
+                self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
                 return "%sif (%s)%s%s%s" % (
@@ -343,7 +344,7 @@ class ElseNode(Node):
                 self.type = 'else'
 
         def evaluate(self, indexLevel, line):
-                return " else %s%s" % (
+                return "\n%selse %s%s" % ("\t"*indexLevel,
                         "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
                         self.content.evaluate(indexLevel + 1, line))
 
@@ -368,6 +369,7 @@ class WhileNode(Node):
                 self.cond = cond
                 self.content = content
                 self.line = line
+                self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
                 return "%swhile (%s) %s%s" % (
@@ -384,6 +386,7 @@ class ForNode(Node):
                 self.post = post
                 self.content = content
                 self.line = cond.line
+                self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
                 return "%sfor (%s; %s; %s) %s%s" % (
@@ -400,6 +403,7 @@ class DoWhileNode(Node):
                 self.content = content
                 self.cond = cond
                 self.line = line
+                self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
                 return "%sdo %s%s%swhile (%s);" % (
@@ -427,3 +431,41 @@ class ScalarMultiplicationNode(Node):
                 return "multiplicacionEscalar(%s, %s%s)" % (    self.arg1.evaluate(indexLevel, line),
                                                                 self.arg2.evaluate(indexLevel, line),
                                                                 arg3)
+
+class CapitalizeNode(Node):
+        def __init__(self, arg1, line):
+                self.arg1 = arg1
+                self.line = line
+                self.type = 'str'
+
+        def evaluate(self, indexLevel, line):
+                return "capitalizar(%s)" % (self.arg1.evaluate(indexLevel, line))
+
+class CollinearNode(Node):
+        def __init__(self, arg1, arg2, line):
+                self.arg1 = arg1
+                self.arg2 = arg2
+                self.line = line
+                self.type = 'bool'
+
+        def evaluate(self, indexLevel, line):
+                return "colineales(%s, %s)" % (self.arg1.evaluate(indexLevel, line),
+                                               self.arg2.evaluate(indexLevel, line))
+
+class PrintNode(Node):
+        def __init__(self, arg1, line):
+                self.arg1 = arg1
+                self.line = line
+                self.type = 'print'
+
+        def evaluate(self, indexLevel, line):
+                return "print(%s)" % (self.arg1.evaluate(indexLevel, line))
+
+class LengthNode(Node):
+        def __init__(self, arg1, line):
+                self.arg1 = arg1
+                self.line = line
+                self.type = 'int'
+
+        def evaluate(self, indexLevel, line):
+                return "length(%s)" % (self.arg1.evaluate(indexLevel, line))

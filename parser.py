@@ -132,6 +132,35 @@ vec2=1;
 multiplicacionEscalar([2], 3);
 multiplicacionEscalar([2], 3, false);#con tercer parametro
 
+#no tiene que andar
+#multiplicacionEscalar([[2]], 3);
+
+#no tiene que andar
+#multiplicacionEscalar(vec6, 3);
+
+#si tiene que andar
+multiplicacionEscalar(vec6[0][0], 3);
+
+print(3+length(multiplicacionEscalar(multiplicacionEscalar(vec5[0], 2),3,true))*8);
+if (colineales([2,3], multiplicacionEscalar([2],3)))
+#son colinealeas
+print("colinneales");
+else
+#no son colineales
+#asi que imprimo false
+print(false);
+
+if(true) a=3;
+else if (a==3) b=4;
+else c=5;
+
+if(a=true) while(2<3) print("hola");
+else while(3<2) print ("chau");
+if(a=true) colineales([2],[3]); 
+else do
+{colineales([3],[3]);
+print (a);
+}while(true);
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
