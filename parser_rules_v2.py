@@ -286,9 +286,13 @@ def p_vector_at(se):
         'expressionVectorAt : expressionVectorAt LBRACKET expression RBRACKET'
         vect = se[1]
         index = se[3]
-        checkType(vect, "vector")
-        checkType(index, "int")
         type1 = getType(vect)
+        try:
+                checkType(vect, "vector")
+        except :
+                if type1 != 'undef':
+                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector.", vect.line)
+        checkType(index, "int")
         se[0] = VectorAtNode(vect, index, vect.line, type1)
 
 def p_vector_at_vector(se):
@@ -300,39 +304,94 @@ def p_vector_at_var(se):
         se[0] = se[1]
 
 #vectorAt que tiene por lo menos un par de brackets
-def p_varVector_at(se):
-        'expressionVectorVar : expressionVectorAt LBRACKET expression RBRACKET'
-        vect = se[1]
-        index = se[3]
-        type1 = getType(vect)
-        try:
-                checkType(vect, "vector")
-        except :
-                if type1 != 'undef':
-                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector.", vect.line)
-        checkType(index, "int")
-        se[0] = VectorAtNode(vect, index, vect.line, type1)
+#def p_varVector_at(se):
+#        'expressionVectorVar : expressionVectorAt LBRACKET expression RBRACKET'
+#        vect = se[1]
+#        index = se[3]
+#        type1 = getType(vect)
+#        try:
+#                checkType(vect, "vector")
+#        except :
+#                if type1 != 'undef':
+#                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector.", vect.line)
+#        checkType(index, "int")
+#        se[0] = VectorAtNode(vect, index, vect.line, type1)
 
 #asignaciones
-def p_var_equals(se):
-        'expressionAssign : factorVar EQUAL expressionAssign'
+def p_minusEqual(se):
+        'expressionAssign : expressionTernaryCond MEQUAL expressionAssign'
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
+
+        if not isVar(ex1):
+                raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
+
+        var = ex1
+        
+        type1 = getType(ex1)
+        if isVectorAt(ex1):
+                var = getVector(ex1)
+                
+        type2 = getType(ex2)
+                
+        resType = type1
+        if isNumeric(type1) and isNumeric(type2):
+                if type1 != type2:
+                        resType = 'float'
+
+                variables[var.value] = resType
+                se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+        else:
+                raise ParserException("No se puede restar elementos no numericos",ex1.line)
+
+def isVar(ex):
+        if ex.type == 'VAR':
+                return True
+        else:
+                if isVectorAt(ex):
+                        return vectorIsVar(ex)
+                else:
+                        return False
+
+def p_equals(se):
+        'expressionAssign : expressionTernaryCond EQUAL expressionAssign'
+        ex1 = se[1]
+        ex2 = se[3]
+        op = se[2]
+        #tiene que ser una variable o una varibleVector[index]
+        if ex1.type == 'VAR':
+                #variable
+                se[0] = var_equals(ex1,ex2,op)
+        else:
+                #vector
+                if ex1.__class__.__name__ == "VectorAtNode":
+                       se[0] = vector_equals(ex1,ex2,op)
+                else:
+                        raise ParserException("En la asignacion se espera una variable o un vector.", ex1.line)
+                
+                
+                
+def var_equals(ex1,ex2,op):
+#        'expressionAssign : factorVar EQUAL expressionAssign'
+#        ex1 = se[1]
+#        ex2 = se[3]
+#        op = se[2]
 
         type2 = getType(ex2)
         if type2 != 'undef':
                 variables[ex1.value] = type2
-                se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+ #               se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                return AssignOperationNode(ex1, ex2, op, type2, ex1.line)
         else:
                 raise ParserException("No se puede asignar una variable sin tipo",ex1.line)
 
-def p_vector_equals(se):
-        'expressionAssign :  expressionVectorVar EQUAL expressionAssign'
+def vector_equals(ex1,ex2,op):
+#        'expressionAssign :  expressionVectorAt EQUAL expressionAssign'
 
-        ex1 = se[1]
-        ex2 = se[3]
-        op = se[2]
+#        ex1 = se[1]
+#        ex2 = se[3]
+#        op = se[2]
 
         type1 = getType(ex1)
         type2 = getType(ex2)
@@ -369,7 +428,8 @@ def p_vector_equals(se):
                                         #me paro en el nombre del vector
    #                                     variables[vect.value] = (type2,1)
 
-                                se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                                #se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                                return AssignOperationNode(ex1, ex2, op, type2, ex1.line)
                         else:
                                 #si es de otro tipo entonces no se puede hacer la asignacion
                                 raise ParserException("No se puede asignar el tipo " + str(ex2.type) + " a vector de tipo " + str(ex1.type), ex1.line)
@@ -454,7 +514,7 @@ def p_ternaryConditiopnal(se):
         caseTrue = se[3]
         caseFalse = se[5]
         checkType(cond, 'bool')
-        checkType(caseTrue, caseFalse.type)
+        checkType(caseTrue, getType(caseFalse))
         se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, caseTrue.type, cond.line)
 
 def p_ternaryConditiopnal_BoolOp(se):
@@ -582,6 +642,9 @@ def getVector(vec):
                         raise Exception("No se puede consegir un vector de algo que no es un 'VectorNode' ni un 'VarNode' ni un 'VectorAtNode'" + vec.__class__.__name__)
                 else:
                         return getVector(vec.vect)
+
+def isVectorAt(ex):
+        return ex.__class__.__name__ == "VectorAtNode"
 
 def vectorIsVar(vec):
         if vec.type == 'VAR':

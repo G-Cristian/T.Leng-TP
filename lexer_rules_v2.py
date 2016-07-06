@@ -6,6 +6,8 @@ tokens = [
     'DOUBLE_AO',
     # asignacion
     'EQUAL',
+    'PEQUAL',
+    'MEQUAL',
     # comparacion
     'COMP',
     # parentesis
@@ -51,9 +53,11 @@ tokens = [
     'VAR'
 ]
 
+t_MEQUAL = r"\-="
 t_AO = r"[\+\-\*/\^%]"
 t_DOUBLE_AO = r"(\+\+)|(\-\-)"
 t_EQUAL = "="
+t_PEQUAL = r"\+="
 t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
 t_RPAREN = r"\)"
