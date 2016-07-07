@@ -192,6 +192,10 @@ a = 4;
 a-=a;
 a+=a;
 
+a = {
+hola : 5, chau:6};
+a.hola + 3;
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

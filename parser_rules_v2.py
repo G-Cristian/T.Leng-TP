@@ -426,7 +426,7 @@ def p_assign_TernaryCond(se):
 
 # Registros
 def p_reg_assign(se):
-        'expressionAssign : factorVar EQUAL LBRACE reg_items RBRACE'
+        'expressionAssign : expressionTernaryCond EQUAL LBRACE reg_items RBRACE'
         for f in se[4].fields():
                 variables["%s.%s" % (se[1].value, f.key.value)] = f.value.type
         # se[0] = RegisterNode(se[4], se[1].line)
