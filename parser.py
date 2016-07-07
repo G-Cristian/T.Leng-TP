@@ -99,6 +99,7 @@ vec1 = [[2],[3]];
 #esto no tiene que andar
 #a = 2+vec1[1];
 vec1 = [1,2];
+vec1[0] = 2;
 a = 2+vec1[1];
 vec2 = [[[1]],[[2,3]]];
 vec2[2] = [[2]];
@@ -161,7 +162,31 @@ else do
 {colineales([3],[3]);
 print (a);
 }while(true);
+<<<<<<< HEAD
 a-=3;
+=======
+a=true;
+b=false;
+2<3? a : a ;
+vector[0] = 3;
+a = 3 + (vectorLibre[0]=3);
+a = a-a;
+a += 3;
+#esto no
+#3+=3;
+#esto tampoco
+#vectorNuevo[0] += 2;
+vec8[2] = [1];
+vec8[2][2] += 2;
+
+a="hola";
+#b = "b";
+#a+=b;
+#a+="c";
+
+#a-="a";
+
+>>>>>>> cambios-en-assign-y--=-con-conflictos
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
