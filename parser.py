@@ -168,13 +168,20 @@ b=false;
 vector[0] = 3;
 a = 3 + (vectorLibre[0]=3);
 a = a-a;
-#a -= 3;
+a += 3;
 #esto no
-#3-=3;
+#3+=3;
 #esto tampoco
-#vectorNuevo[0] -= 2;
-#vec8[2] = [1];
-#vec8[2][2] -= 2;
+#vectorNuevo[0] += 2;
+vec8[2] = [1];
+vec8[2][2] += 2;
+
+a="hola";
+#b = "b";
+#a+=b;
+#a+="c";
+
+#a-="a";
 
 """
 

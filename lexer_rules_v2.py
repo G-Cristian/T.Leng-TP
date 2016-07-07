@@ -53,11 +53,9 @@ tokens = [
     'VAR'
 ]
 
-t_MEQUAL = r"\-="
 t_AO = r"[\+\-\*/\^%]"
 t_DOUBLE_AO = r"(\+\+)|(\-\-)"
 t_EQUAL = "="
-t_PEQUAL = r"\+="
 t_COMP = r"<|>|==|!="
 t_LPAREN = r"\("
 t_RPAREN = r"\)"
@@ -124,6 +122,15 @@ def t_VAR(t):
         t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}
 
     return t
+
+def t_MEQUAL(token):
+    r"\-="
+    return token
+
+def t_PEQUAL(token):
+    r"\+="
+    return token
+
 
 def t_NEWLINE(token):
     r"\n+"

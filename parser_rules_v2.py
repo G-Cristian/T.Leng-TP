@@ -345,6 +345,39 @@ def p_minusEqual(se):
         else:
                 raise ParserException("No se puede restar elementos no numericos",ex1.line)
 
+def p_plusEqual(se):
+        'expressionAssign : expressionTernaryCond PEQUAL expressionAssign'
+        ex1 = se[1]
+        ex2 = se[3]
+        op = se[2]
+
+        if not isVar(ex1):
+                raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
+
+        var = ex1
+        
+        type1 = getType(ex1)
+        if isVectorAt(ex1):
+                var = getVector(ex1)
+                
+        type2 = getType(ex2)
+                
+        resType = type1
+        if isNumeric(type1) and isNumeric(type2):
+                if type1 != type2:
+                        resType = 'float'
+
+                variables[var.value] = resType
+                se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+        else:
+                if type1 == 'str' and type2 == 'str':
+                        resType = 'str'
+                        variables[var.value] = resType
+                        se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                else:
+                        raise ParserException("No se puede sumar elementos no numericos ni strings",ex1.line)
+
+
 def isVar(ex):
         if ex.type == 'VAR':
                 return True
