@@ -469,3 +469,41 @@ class LengthNode(Node):
 
         def evaluate(self, indexLevel, line):
                 return "length(%s)" % (self.arg1.evaluate(indexLevel, line))
+
+class RegisterNode(Node):
+        def __init__(self, arg1, line):
+                self.arg1 = arg1
+                self.line = line
+                self.type = 'register'
+
+        def evaluate(self, indexLevel, line):
+                return "{%s}" % (self.arg1.evaluate(indexLevel, line))
+
+class RegisterItemsNode(Node):
+        def __init__(self, field1, rest):
+                self.field1 = field1
+                self.rest = rest
+                # self.line = line
+                self.type = 'regitem'
+
+        def evaluate(self, indexLevel, line):
+                return "%s, %s" % (
+                        self.field1.evaluate(indexLevel, line),
+                        self.rest.evaluate(indexLevel, line)
+                        )
+        def fields(self):
+                return [self.field1] + self.rest.fields()
+
+class RegFieldNode(Node):
+        def __init__(self, key, exp):
+                self.key = key
+                self.value = exp
+                self.type = 'field'
+
+        def evaluate(self, indexLevel, line):
+                return "%s: %s" % (
+                        self.key.evaluate(indexLevel, line),
+                        self.value.evaluate(indexLevel, line)
+                        )
+        def fields(self):
+                return [self]

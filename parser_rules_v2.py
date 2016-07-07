@@ -388,22 +388,27 @@ def p_assign_TernaryCond(se):
         se[0] = se[1]
 
 # Registros
-# def p_reg(se):
-#         'expression : LBRACE reg_items RBRACE'
-#         se[0] = RegisterNode(se[2])
+def p_reg_assign(se):
+        'expressionAssign : factorVar EQUAL LBRACE reg_items RBRACE'
+        for f in se[4].fields():
+                pdb.set_trace()
+                variables["%s.%s" % (se[1].value, f.key.value)] = f.value.type
+        # se[0] = RegisterNode(se[4], se[1].line)
+        se[0] = AssignOperationNode(se[1],  RegisterNode(se[4], se[1].line), se[2], 'reg', se[1].line)
 
-# def p_reg_items(se):
-#         'reg_items : reg_field COMMA reg_items'
-#         se[0] = RegisterItemsNode(se[1], se[3])
+def p_reg_items(se):
+        'reg_items : reg_field COMMA reg_items'
+        se[0] = RegisterItemsNode(se[1], se[3])
 
-# def p_reg_single_item(se):
-#         'reg_items : reg_field'
-#         se[0] = se[1]
+def p_reg_single_item(se):
+        'reg_items : reg_field'
+        se[0] = se[1]
 
-# def p_reg_field(se):
-#         'reg_field : ........ COLON expression'
-#         key = se[1]
-#         checkType(key......)
+def p_reg_field(se):
+        'reg_field : factorVar COLON expression'
+        key = se[1]
+        exp = se[3]
+        se[0] = RegFieldNode(key, exp)
 
 #comments
 # def p_comments(se):

@@ -113,7 +113,7 @@ def t_STRING(token):
     return token
 
 def t_VAR(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r'[a-zA-Z_][\.a-zA-Z_0-9]*'
     t.type = reserved.get(t.value,'VAR')    # Check for reserved words
 
     if t.type == 'VAR':

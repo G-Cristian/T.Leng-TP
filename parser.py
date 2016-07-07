@@ -156,11 +156,14 @@ else c=5;
 
 if(a=true) while(2<3) print("hola");
 else while(3<2) print ("chau");
-if(a=true) colineales([2],[3]); 
+if(a=true) colineales([2],[3]);
 else do
 {colineales([3],[3]);
 print (a);
 }while(true);
+a = {
+hola : 5, chau:6};
+a.hola + 3;
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
