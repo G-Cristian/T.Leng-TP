@@ -6,13 +6,10 @@ tokens = [
     'DOUBLE_AO',
     # asignacion
     'EQUAL',
-<<<<<<< HEAD
     'MEQUAL',
     'PEQUAL',
-=======
     'PEQUAL',
     'MEQUAL',
->>>>>>> cambios-en-assign-y--=-con-conflictos
     # comparacion
     'COMP',
     # parentesis
@@ -136,10 +133,6 @@ def t_PEQUAL(token):
     r"\+="
     return token
 
-<<<<<<< HEAD
-=======
-
->>>>>>> cambios-en-assign-y--=-con-conflictos
 def t_NEWLINE(token):
     r"\n+"
     token.lexer.lineno += len(token.value)

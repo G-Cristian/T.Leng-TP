@@ -162,9 +162,10 @@ else do
 {colineales([3],[3]);
 print (a);
 }while(true);
-<<<<<<< HEAD
+
+a=2;
 a-=3;
-=======
+
 a=true;
 b=false;
 2<3? a : a ;
@@ -180,13 +181,17 @@ vec8[2] = [1];
 vec8[2][2] += 2;
 
 a="hola";
-#b = "b";
-#a+=b;
-#a+="c";
+b = "b";
+a+=b;
+a+="c";
 
+#tiene que fallar
 #a-="a";
 
->>>>>>> cambios-en-assign-y--=-con-conflictos
+a = 4;
+a-=a;
+a+=a;
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
