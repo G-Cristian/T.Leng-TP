@@ -171,9 +171,9 @@ class StrConcatNode(Node):
                 self.type = 'str'
 
         def evaluate(self, indexLevel, line):
-                return "%s + %s" % (
+                return "%s + \"%s\"" % (
                         self.str1.evaluate(indexLevel, line),
-                        self.str2.evaluate(indexLevel, line)
+                        self.str2
                         )
 
 class VectorNode(Node):

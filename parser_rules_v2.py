@@ -103,6 +103,10 @@ def p_aritExp(se):
         if isNumeric(type1) and isNumeric(type2):
                 unifyNumeric(ex1, ex2)
                 se[0] = BinaryOperationNode(ex1, ex2, op, type2, ex1.line)
+        elif ex1.type == "str" and ex2.type == "str":
+                if op != '+':
+                        raise Exception("Operador invalido")
+                se[0] = StrConcatNode(ex1, ex2, se[1].line)
         else:
                 raise ParserException("Error de tipos en operador aritmetico binario", ex1.line)
 
@@ -247,17 +251,18 @@ def p_bool_comp_arit(se):
 
 # Cadenas
 def p_string(se):
-        'expression : STRING'
+        'unaryExp : STRING'
+        # pdb.set_trace()
         se[0] = StrNode(se[1]["value"], se[1]["line"])
 
-def p_string_concat(se):
-        'expression : expression AO STRING'
-        op = se[2]
-        if op != '+':
-                raise Exception("Operador invalido")
-        string = se[1]
-        checkType(string, 'str')
-        se[0] = StrConcatNode(string, se[3], se[1].line)
+# def p_string_concat(se):
+#         'expression : expression AO STRING'
+#         op = se[2]
+#         if op != '+':
+#                 raise Exception("Operador invalido")
+#         string = se[1]
+#         checkType(string, 'str')
+#         se[0] = StrConcatNode(string, se[3]["value"], se[1].line)
 
 
 # Vectores

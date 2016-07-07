@@ -108,7 +108,7 @@ def t_NUMBER(token):
     return token
 
 def t_STRING(token):
-    r"\".*\""
+    r"\"[^\"]*\""
     token.value = {"value": token.value[1:-1], "line": token.lexer.lineno}
     return token
 
