@@ -6,6 +6,8 @@ tokens = [
     'DOUBLE_AO',
     # asignacion
     'EQUAL',
+    'MEQUAL',
+    'PEQUAL',
     # comparacion
     'COMP',
     # parentesis
@@ -120,6 +122,14 @@ def t_VAR(t):
         t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}
 
     return t
+
+def t_MEQUAL(token):
+    r"\-="
+    return token
+
+def t_PEQUAL(token):
+    r"\+="
+    return token
 
 def t_NEWLINE(token):
     r"\n+"

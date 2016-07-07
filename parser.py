@@ -161,6 +161,7 @@ else do
 {colineales([3],[3]);
 print (a);
 }while(true);
+a-=3;
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
