@@ -17,12 +17,8 @@ class ParserException(Exception):
                 msg += "\nline: " + str(line)
                 super(ParserException, self).__init__(msg)
 
-#codeIni va aca arriba para que sea el primero de la produccion
-
 #code & statements
 
-#En este se llama a un statement y luego mas codigo
-#Notar el statement permite poner comentarios al finalizar el statement
 def p_code_statement(se):
         'code : statement code'
         ex1 = se[1]
@@ -47,8 +43,6 @@ def p_statement_1(se):
 def p_statement_block(se):
         'statement : block'
         se[0] = se[1]
-        # se[0] = ExpressionStatementNode(block, comment, block.line)
-
 def p_statement_if(se):
         'statement : if '
         se[0] = se[1]
@@ -69,18 +63,6 @@ def p_statement_do_while(se):
 def p_expression_aritmethic(se):
         'expression : expressionAssign'
         se[0] = se[1]
-
-# def p_expression_boolean(se):
-#         'expression : bool'
-#         se[0] = se[1]
-
-# def p_expression_string(se):
-#         'expression : string'
-#         se[0] = se[1]
-
-# def p_expression_vector(se):
-#         'expression : vector'
-#         se[0] = se[1]
 
 def p_optional_expr(se):
         'optional_expr : expression'
@@ -156,10 +138,6 @@ def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
         se[0] = se[1]
 
-# def p_factorExp_Var(se):
-#         'factorExp : factorVar'
-#         se[0] = se[1]
-
 def p_factorExp_Num(se):
         'factorExp : factorNumExp'
         se[0] = se[1]
@@ -167,10 +145,6 @@ def p_factorExp_Num(se):
 def p_factorExp_Bool(se):
         'factorExp : bool_atom'
         se[0] = se[1]
-
-# def p_factorExp_Vector(se):
-#         'factorExp : expressionVector'
-#         se[0] = se[1]
 
 def p_factorExp_VectorAt(se):
         'factorExp : expressionVectorAt'
@@ -204,10 +178,6 @@ def p_bool_false(se):
         'bool_atom : FALSE'
         se[0] = BooleanNode(se[1]["value"], se[1]["line"])
 
-#def p_bool_atom(se):
-#        'expression : bool_atom'
-#        se[0] = se[1]
-
 def p_bool_op(se):
         'expressionBoolOp : expressionBoolOp BOOL_OP expressionComp'
         bool1 = se[1]
@@ -226,12 +196,6 @@ def p_bool_neg(se):
         bool1 = se[2]
         checkType(bool1, 'bool')
         se[0] = BooleanNegationNode(bool1, bool1.line)
-
-#def p_bool_paren(se):
-#        'bool_atom : LPAREN expression RPAREN'
-#        expr = se[2]
-#        checkType(expr, 'bool')
-#        se[0] = BooleanParenExpression(expr, expr.line)
 
 def p_bool_comp(se):
         'expressionComp : expressionComp COMP aritExp'
@@ -252,18 +216,7 @@ def p_bool_comp_arit(se):
 # Cadenas
 def p_string(se):
         'unaryExp : STRING'
-        # pdb.set_trace()
         se[0] = StrNode(se[1]["value"], se[1]["line"])
-
-# def p_string_concat(se):
-#         'expression : expression AO STRING'
-#         op = se[2]
-#         if op != '+':
-#                 raise Exception("Operador invalido")
-#         string = se[1]
-#         checkType(string, 'str')
-#         se[0] = StrConcatNode(string, se[3]["value"], se[1].line)
-
 
 # Vectores
 def p_vector(se):
@@ -275,7 +228,6 @@ def p_vector_items(se):
         'vector_items : expression COMMA vector_items'
         head = se[1]
         tail = se[3]
-        # pdb.set_trace()
         unifyNumeric(head, tail)
         checkType(head, tail.type)
         type1 = getType(head)
@@ -365,14 +317,6 @@ def p_vector_equals(se):
 
                                 variables[vect.value] = (newType,1+currentVectorLevel)
 
-                                #si el tipo de la derecha es un vector
-                                #tengo que hacer que la variable sea un vector de vectores
-#                                if isTuple(type2):
-                                        #me paro en el nombre del vector
- #                                       variables[vect.value] = (type2[0],type2[1]+1+currentVectorLevel)
-  #                              else:
-                                        #me paro en el nombre del vector
-   #                                     variables[vect.value] = (type2,1)
 
                                 se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
                         else:
@@ -391,7 +335,6 @@ def p_assign_TernaryCond(se):
 def p_reg_assign(se):
         'expressionAssign : factorVar EQUAL LBRACE reg_items RBRACE'
         for f in se[4].fields():
-                pdb.set_trace()
                 variables["%s.%s" % (se[1].value, f.key.value)] = f.value.type
         # se[0] = RegisterNode(se[4], se[1].line)
         se[0] = AssignOperationNode(se[1],  RegisterNode(se[4], se[1].line), se[2], 'reg', se[1].line)
@@ -410,10 +353,6 @@ def p_reg_field(se):
         exp = se[3]
         se[0] = RegFieldNode(key, exp)
 
-#comments
-# def p_comments(se):
-#         'comments : COMMENT comments'
-#         se[0] = CommentNode(se[1]["value"], se[2] ,se[1]["line"])
 
 def p_comments_empty(se):
         'comments : '
@@ -425,10 +364,6 @@ def p_block(se):
         code = se[2]
         se[0] = BlockNode(code, code.line)
 
-# Single Statements
-# def p_single_statement_block(se):
-#         'singleStatement : block'
-#         se[0] = se[1]
 
 def p_single_statement_comment(se):
         'singleStatement : COMMENT singleStatement'
@@ -577,7 +512,6 @@ def unifyNumeric(a, b):
 
 
 def checkType(elem, type):
-        # pdb.set_trace()
         typeToCheck = elem.type
         if elem.type == 'VAR':
                 typeToCheck = getType(elem)
