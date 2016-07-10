@@ -275,12 +275,25 @@ def p_vector_at_var(se):
 #        se[0] = VectorAtNode(vect, index, vect.line, type1)
 
 #asignaciones
-def p_minusEqual(se):
-        'expressionAssign : expressionTernaryCond MEQUAL expressionAssign'
+def p_aoEqual(se):
+        'expressionAssign : expressionTernaryCond AOEQUAL expressionAssign'
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
 
+        checkRValue(ex2)
+
+        if op == '+=':
+                #+=
+                se[0] = plusEqual(ex1, ex2, op)
+        else:
+                #-=, *=, /=
+                se[0] = minusTimesDivEqual(ex1, ex2, op)
+
+def minusTimesDivEqual(ex1, ex2, op):
+        
+        checkRValue(ex2)
+        
         if not isVar(ex1):
                 raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
 
@@ -298,15 +311,13 @@ def p_minusEqual(se):
                         resType = 'float'
 
                 variables[var.value] = resType
-                se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 raise ParserException("No se puede restar elementos no numericos",ex1.line)
 
-def p_plusEqual(se):
-        'expressionAssign : expressionTernaryCond PEQUAL expressionAssign'
-        ex1 = se[1]
-        ex2 = se[3]
-        op = se[2]
+def plusEqual(ex1, ex2, op):
+
+        checkRValue(ex2)
 
         if not isVar(ex1):
                 raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
@@ -325,12 +336,12 @@ def p_plusEqual(se):
                         resType = 'float'
 
                 variables[var.value] = resType
-                se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 if type1 == 'str' and type2 == 'str':
                         resType = 'str'
                         variables[var.value] = resType
-                        se[0] = AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                        return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
                 else:
                         raise ParserException("No se puede sumar elementos no numericos ni strings",ex1.line)
 
@@ -343,12 +354,15 @@ def isVar(ex):
                         return vectorIsVar(ex)
                 else:
                         return False
-
+                
 def p_equals(se):
         'expressionAssign : expressionTernaryCond EQUAL expressionAssign'
         ex1 = se[1]
         ex2 = se[3]
         op = se[2]
+
+        checkRValue(ex2)
+        
         #tiene que ser una variable o una varibleVector[index]
         if ex1.type == 'VAR':
                 #variable
@@ -631,6 +645,34 @@ def vectorIsVar(vec):
                         return False
                 else:
                         return vectorIsVar(vec.vect)
+
+def isRValue(ex):
+        #chequea si es bool, int, float, str, vector, register
+        #si no es ninguna entonces no es un RValue
+        try:
+                checkType(ex,'bool')
+        except:
+                try:
+                        checkType(ex,'int')
+                except:
+                        try:
+                                checkType(ex,'float')
+                        except:
+                                try:
+                                        checkType(ex,'str')
+                                except:
+                                        try:
+                                                checkType(ex,'vector')
+                                        except:
+                                                try:
+                                                        checkType(ex,'register')
+                                                except:
+                                                        return False
+        return True
+
+def checkRValue(ex):
+        if not isRValue(ex):
+                raise ParserException("Se esperaba un rvalue (bool, int, float, str, vector, register o variable de alguno de estos tipos)", ex.line)
 
 def p_error(token):
         message = "[Syntax error]"

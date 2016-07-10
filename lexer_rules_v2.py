@@ -6,10 +6,7 @@ tokens = [
     'DOUBLE_AO',
     # asignacion
     'EQUAL',
-    'MEQUAL',
-    'PEQUAL',
-    'PEQUAL',
-    'MEQUAL',
+    'AOEQUAL',
     # comparacion
     'COMP',
     # parentesis
@@ -125,12 +122,8 @@ def t_VAR(t):
 
     return t
 
-def t_MEQUAL(token):
-    r"\-="
-    return token
-
-def t_PEQUAL(token):
-    r"\+="
+def t_AOEQUAL(token):
+    r"(\-=)|(\+=)|(\*=)|(/=)"
     return token
 
 def t_NEWLINE(token):
