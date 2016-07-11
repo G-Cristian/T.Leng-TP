@@ -5,11 +5,38 @@ import pdb
 variables = {
 }
 
+registers = {
+}
+
 def getType(ex):
         if ex.type != 'VAR':
                 return ex.type
         else:
                 return variables.get(ex.value, 'undef')
+
+def getRegisterMemberType(reg, member):
+        type = getType(reg)
+        r = registers[ str( type[1] ) ]
+        for f in r.arg1.fields():
+                if f.key.value == member:
+                        return f.type
+        return 'undef'
+
+def setRegMemberType(ex1, type2):
+        if not isMemberAccess(ex1):
+                raise ParcerException("La expresion tiene que ser un acceso a un miembro de un registro.", ex1.line)
+        else:
+                type = getType(ex1.reg)
+                r = registers[ str(type[1]) ]
+                for f in r.arg1.fields():
+                        if f.key.value == ex1.member.value:
+                                f.type = type2
+                                return
+                raise ParserException("No se encontro un miembro con nombre %s" % ex1.member.value, ex1.line)
+
+#def getRegisterVariable(reg):
+#        if reg.type == 'VAR':
+#                return registers[reg]
 
 class ParserException(Exception):
         def __init__(self, message, line):
@@ -85,7 +112,7 @@ def p_aritExp(se):
         if isNumeric(type1) and isNumeric(type2):
                 unifyNumeric(ex1, ex2)
                 se[0] = BinaryOperationNode(ex1, ex2, op, type2, ex1.line)
-        elif ex1.type == "str" and ex2.type == "str":
+        elif type1 == "str" and type2 == "str":
                 if op != '+':
                         raise Exception("Operador invalido")
                 se[0] = StrConcatNode(ex1, ex2, se[1].line)
@@ -134,6 +161,10 @@ def p_unaryExp_double2(se):
         else:
                 raise ParserException("Error de tipos en operador aritmetico unario doble", ex1.line)
 
+def p_unaryExp2_memberAccess(se):
+        'unaryExp2 : memberAccess'
+        se[0] = se[1]
+
 def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
         se[0] = se[1]
@@ -148,6 +179,10 @@ def p_factorExp_Bool(se):
 
 def p_factorExp_VectorAt(se):
         'factorExp : expressionVectorAt'
+        se[0] = se[1]
+
+def p_factorExp_Reg(se):
+        'factorExp : factorReg'
         se[0] = se[1]
 
 def p_factorExp_paren(se):
@@ -260,6 +295,10 @@ def p_vector_at_var(se):
         'expressionVectorAt : factorVar'
         se[0] = se[1]
 
+def p_vector_at_memberAccess(se):
+        'expressionVectorAt : memberAccess'
+        se[0] = se[1]
+
 #vectorAt que tiene por lo menos un par de brackets
 #def p_varVector_at(se):
 #        'expressionVectorVar : expressionVectorAt LBRACKET expression RBRACKET'
@@ -309,8 +348,12 @@ def minusTimesDivEqual(ex1, ex2, op):
         if isNumeric(type1) and isNumeric(type2):
                 if type1 != type2:
                         resType = 'float'
+                        
+                if isMemberAccess(ex1):
+                        setRegMemberType(ex1, resType)
+                else:
+                        variables[var.value] = resType
 
-                variables[var.value] = resType
                 return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 raise ParserException("No se puede restar elementos no numericos",ex1.line)
@@ -335,12 +378,20 @@ def plusEqual(ex1, ex2, op):
                 if type1 != type2:
                         resType = 'float'
 
-                variables[var.value] = resType
+                if isMemberAccess(ex1):
+                        setRegMemberType(ex1, resType)
+                else:
+                        variables[var.value] = resType
+
                 return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 if type1 == 'str' and type2 == 'str':
                         resType = 'str'
-                        variables[var.value] = resType
+                        if isMemberAccess(ex1):
+                                setRegMemberType(ex1, resType)
+                        else:
+                                variables[var.value] = resType
+
                         return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
                 else:
                         raise ParserException("No se puede sumar elementos no numericos ni strings",ex1.line)
@@ -353,7 +404,10 @@ def isVar(ex):
                 if isVectorAt(ex):
                         return vectorIsVar(ex)
                 else:
-                        return False
+                        if isMemberAccess:
+                                return regIsVar(ex)
+                        else:
+                                return False
                 
 def p_equals(se):
         'expressionAssign : expressionTernaryCond EQUAL expressionAssign'
@@ -363,7 +417,7 @@ def p_equals(se):
 
         checkRValue(ex2)
         
-        #tiene que ser una variable o una varibleVector[index]
+        #tiene que ser una variable o una varibleVector[index] o un registro.member
         if ex1.type == 'VAR':
                 #variable
                 se[0] = var_equals(ex1,ex2,op)
@@ -372,7 +426,11 @@ def p_equals(se):
                 if ex1.__class__.__name__ == "VectorAtNode":
                        se[0] = vector_equals(ex1,ex2,op)
                 else:
-                        raise ParserException("En la asignacion se espera una variable o un vector.", ex1.line)
+                        if isMemberAccess(ex1):
+                                #registro
+                                se[0] = regMember_equals(ex1, ex2, op)
+                        else:
+                                raise ParserException("En la asignacion se espera una variable o un vector.", ex1.line)
                 
                 
                 
@@ -439,16 +497,60 @@ def p_assign_TernaryCond(se):
         se[0] = se[1]
 
 # Registros
-def p_reg_assign(se):
-        'expressionAssign : expressionTernaryCond EQUAL LBRACE reg_items RBRACE'
-        for f in se[4].fields():
-                variables["%s.%s" % (se[1].value, f.key.value)] = f.value.type
-        # se[0] = RegisterNode(se[4], se[1].line)
-        se[0] = AssignOperationNode(se[1],  RegisterNode(se[4], se[1].line), se[2], 'reg', se[1].line)
+def p_register(se):
+        'factorReg : LBRACE reg_items RBRACE'
+        node = RegisterNode(se[2], se[2].line)
+        registers[str(node.type[1])] = node
+        se[0] = node
+
+def p_memberAccess(se):
+        'memberAccess : memberAccess DOT factorVar'
+        ex1 = se[1]
+        ex2 = se[3]
+        
+        se[0] = memberAccess(ex1, ex2)
+
+def p_memberAccess_factorExp(se):
+        'memberAccess : factorExp DOT factorVar'
+        ex1 = se[1]
+        ex2 = se[3]
+
+        se[0] = memberAccess(ex1, ex2)
+
+def memberAccess(ex1, ex2):
+        checkType(ex1, "register")
+        type2 = getRegisterMemberType(ex1, ex2.value)
+
+        if type2 == 'undef':
+                raise ParserException("No se encontro un miembro de dato con nombre %s" % ex2.value, ex2.line)
+        
+        return MemberAccessNode(ex1, ex2, type2, ex1.line)
+
+def regMember_equals(ex1, ex2, op):
+        type2 = getType(ex2)
+        #Lo de la derecha tiene que estar definido
+        if type2 != 'undef':
+                #El registro de memberAccess tiene que ser una variable
+                #Es decir es una variable de tipo regsitro
+                if regIsVar(ex1.reg):
+                        setRegMemberType(ex1, type2)
+                        
+                        return AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                else:
+                        raise ParserException("El registro no es una variable.", ex1.line)
+        else:
+                raise ParserException("No se puede asignar una variable sin tipo",ex1.line)
+
+#def p_reg_assign(se):
+#        'expressionAssign : expressionTernaryCond EQUAL LBRACE reg_items RBRACE'
+#        for f in se[4].fields():
+#                variables["%s.%s" % (se[1].value, f.key.value)] = f.value.type
+#        # se[0] = RegisterNode(se[4], se[1].line)
+#        se[0] = AssignOperationNode(se[1],  RegisterNode(se[4], se[1].line), se[2], 'reg', se[1].line)
 
 def p_reg_items(se):
         'reg_items : reg_field COMMA reg_items'
-        se[0] = RegisterItemsNode(se[1], se[3])
+        se[0] = RegisterItemsNode(se[1], se[3], se[1].line)
 
 def p_reg_single_item(se):
         'reg_items : reg_field'
@@ -456,9 +558,12 @@ def p_reg_single_item(se):
 
 def p_reg_field(se):
         'reg_field : factorVar COLON expression'
+
         key = se[1]
         exp = se[3]
-        se[0] = RegFieldNode(key, exp)
+        checkRValue(exp)
+        type = getType(exp)
+        se[0] = RegFieldNode(key, exp, type, key.line)
 
 
 def p_comments_empty(se):
@@ -622,8 +727,11 @@ def checkType(elem, type):
         typeToCheck = elem.type
         if elem.type == 'VAR':
                 typeToCheck = getType(elem)
-        if (type != "vector" and typeToCheck != type) or (type == "vector" and not isTuple(typeToCheck)) :
+        if (type != "vector" and type != "register" and typeToCheck != type) or (type == "vector" and not isTuple(typeToCheck))or (type == "register" and not typeIsRegister(typeToCheck)):
                 raise Exception("Error de tipos: se esperaba %s y se encontro %s" % (type, typeToCheck))
+
+def typeIsRegister(type):
+        return type.__class__.__name__ == "tuple" and type[0] == 'register'
 
 def getVector(vec):
         if vec.__class__.__name__ == 'VectorNode' or vec.__class__.__name__ == 'VarNode':
@@ -637,6 +745,9 @@ def getVector(vec):
 def isVectorAt(ex):
         return ex.__class__.__name__ == "VectorAtNode"
 
+def isMemberAccess(ex):
+        return ex.__class__.__name__ == "MemberAccessNode"
+
 def vectorIsVar(vec):
         if vec.type == 'VAR':
                 return True
@@ -645,6 +756,15 @@ def vectorIsVar(vec):
                         return False
                 else:
                         return vectorIsVar(vec.vect)
+
+def regIsVar(reg):
+        if reg.type == 'VAR':
+                return True
+        else:
+                if not isMemberAccess(reg):
+                        return False
+                else:
+                        return regIsVar(reg.reg)
 
 def isRValue(ex):
         #chequea si es bool, int, float, str, vector, register

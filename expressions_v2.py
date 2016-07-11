@@ -171,9 +171,9 @@ class StrConcatNode(Node):
                 self.type = 'str'
 
         def evaluate(self, indexLevel, line):
-                return "%s + \"%s\"" % (
+                return "%s + %s" % (
                         self.str1.evaluate(indexLevel, line),
-                        self.str2
+                        self.str2.evaluate(indexLevel, line)
                         )
 
 class VectorNode(Node):
@@ -471,20 +471,34 @@ class LengthNode(Node):
                 return "length(%s)" % (self.arg1.evaluate(indexLevel, line))
 
 class RegisterNode(Node):
+        currentReg = 0
         def __init__(self, arg1, line):
                 self.arg1 = arg1
                 self.line = line
-                self.type = 'register'
+                self.type = ('register', RegisterNode.currentReg)
+                RegisterNode.currentReg += 1
 
         def evaluate(self, indexLevel, line):
                 return "{%s}" % (self.arg1.evaluate(indexLevel, line))
 
+class MemberAccessNode(Node):
+        def __init__(self, reg, member, type, line):
+                self.reg = reg
+                self.member = member
+                self.line = line
+                self.type = type
+
+        def evaluate(self, indexLevel, line):
+                return "%s.%s" % (self.reg.evaluate(indexLevel, line),
+                                  self.member.evaluate(indexLevel, line))
+
 class RegisterItemsNode(Node):
-        def __init__(self, field1, rest):
+        def __init__(self, field1, rest, line):
                 self.field1 = field1
                 self.rest = rest
                 # self.line = line
                 self.type = 'regitem'
+                self.line = line
 
         def evaluate(self, indexLevel, line):
                 return "%s, %s" % (
@@ -495,10 +509,11 @@ class RegisterItemsNode(Node):
                 return [self.field1] + self.rest.fields()
 
 class RegFieldNode(Node):
-        def __init__(self, key, exp):
+        def __init__(self, key, exp, type, line):
                 self.key = key
                 self.value = exp
-                self.type = 'field'
+                self.type = type
+                self.line = line
 
         def evaluate(self, indexLevel, line):
                 return "%s: %s" % (

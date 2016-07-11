@@ -1,5 +1,5 @@
 @echo off
-SET /a GOODLEN = 2
+SET /a GOODLEN = 3
 SET /a GOODPASS = 0
 SET /a GOODNOTPASS = 0
 SET /a BADLEN = 2

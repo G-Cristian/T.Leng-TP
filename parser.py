@@ -195,7 +195,17 @@ a+=a;
 a = {
 hola : 5, chau:6};
 a.hola + 3;
+b = a;
+b.hola = "hola";
 
+#no tiene que andar
+#a.hola + 3;
+
+#pero esto si tiene que andar
+a.hola += "3";
+
+z = "z";
+z = z + "z";
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario
