@@ -206,6 +206,17 @@ a.hola += "3";
 
 z = "z";
 z = z + "z";
+
+vec100[0] = { nombre : "Juan" };
+vec = [{ nombre : "Juan" }, { nombre : "Pepe" }];
+vec[0] = { nombre : "Hola" };
+vec[0].nombre = "2";
+#no tiene que andar
+#vec[0].nombre = 2;
+#a = vec[0].nombre + 2;
+a = vec[0].nombre + "2";
+true ? 1.0 : 1;
+
 """
 
 """#comentarios iniciales #probando comentario dentro de comentario

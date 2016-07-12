@@ -33,6 +33,40 @@ def setRegMemberType(ex1, type2):
                                 f.type = type2
                                 return
                 raise ParserException("No se encontro un miembro con nombre %s" % ex1.member.value, ex1.line)
+        
+def registersWithSameFieldsWithSameTypes(type1, type2):
+        error = False
+        if typeIsRegister(type1) and typeIsRegister(type2):
+                r1 = registers[ str (type1[1]) ]
+                r2 = registers[ str (type2[1]) ]
+
+                for f in r1.arg1.fields():
+                        if not regContainsFielWithSameType(r2, f):
+                                error = True
+                if not error:
+                        for f in r2.arg1.fields():
+                                if not regContainsFielWithSameType(r1, f):
+                                        error = True
+        else:
+                error = True
+                
+        return not error
+
+def regContainsFielWithSameType(r, field):
+        contains = False
+        for f in r.arg1.fields():
+                contains = False
+                if f.key.value == field.key.value:
+                        contains = True
+                        type2 = getType(field)
+                        try:
+                                checkType(f, type2)
+                        except:
+                                contains = False
+
+                        if contains:
+                                return True
+        return False
 
 #def getRegisterVariable(reg):
 #        if reg.type == 'VAR':
@@ -110,8 +144,11 @@ def p_aritExp(se):
         type2 = getType(ex2)
 
         if isNumeric(type1) and isNumeric(type2):
-                unifyNumeric(ex1, ex2)
-                se[0] = BinaryOperationNode(ex1, ex2, op, type2, ex1.line)
+                retType = unifyNumeric(ex1, ex2)
+                if retType != None:
+                        se[0] = BinaryOperationNode(ex1, ex2, op, retType, ex1.line)
+                else:
+                        raise ParserException("Tipos no unificaron en la operacion aritmetica.", ex1.line)
         elif type1 == "str" and type2 == "str":
                 if op != '+':
                         raise Exception("Operador invalido")
@@ -263,10 +300,14 @@ def p_vector_items(se):
         'vector_items : expression COMMA vector_items'
         head = se[1]
         tail = se[3]
-        unifyNumeric(head, tail)
-        checkType(head, tail.type)
-        type1 = getType(head)
-        se[0] = VectorItemsNode(head, tail, head.line, type1)
+        unified = unifyNumeric(head, tail)
+        if unified != None:
+                retType = unified
+        else:
+                checkType(head, tail.type)
+                retType = getType(head)
+
+        se[0] = VectorItemsNode(head, tail, head.line, retType)
 
 def p_vector_single_item(se):
         'vector_items : expression'
@@ -465,10 +506,16 @@ def vector_equals(ex1,ex2,op):
                         vect = getVector(ex1)
                         #si el tipo del vector todavia no se asigno lo va a asignar al tipo de la derecha.
                         #si es del mismo tipo hace lo mismo.
-                        if type1 == 'undef' or type1 == type2:
+                        sameType = True
+                        try:
+                                checkType(ex1, type2)
+                        except:
+                                sameType = False
+                        if type1 == 'undef' or sameType:
                                 newType = 'undef'
                                 currentVectorLevel = 0
-                                if isTuple(type2):
+                                #si es un vector el type2
+                                if isVector(type2):
                                         newType = type2[0]
                                         currentVectorLevel = type2[1]
                                 else:
@@ -533,8 +580,20 @@ def regMember_equals(ex1, ex2, op):
                 #El registro de memberAccess tiene que ser una variable
                 #Es decir es una variable de tipo regsitro
                 if regIsVar(ex1.reg):
-                        setRegMemberType(ex1, type2)
-                        
+                        if regComesFromVector(ex1.reg):
+                                #vectAt = getVectorAtFromReg(ex1.reg)
+                                sameType = True
+                                try:
+                                        checkType(ex1, type2)
+                                except:
+                                        sameType = False
+
+                                if sameType:
+                                        setRegMemberType(ex1, type2)
+                                else:
+                                        raise ParserException("No se puede cambiar el tipo de un mimbros de dato de un registro asignado a un vector.", ex1.line)
+                        else:
+                                setRegMemberType(ex1, type2)
                         return AssignOperationNode(ex1, ex2, op, type2, ex1.line)
                 else:
                         raise ParserException("El registro no es una variable.", ex1.line)
@@ -611,8 +670,15 @@ def p_ternaryConditiopnal(se):
         caseTrue = se[3]
         caseFalse = se[5]
         checkType(cond, 'bool')
-        checkType(caseTrue, getType(caseFalse))
-        se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, caseTrue.type, cond.line)
+        unified = unifyNumeric(caseTrue, caseFalse)
+        retType = caseTrue.type
+        if unified != None:
+                retType = unified
+        else:
+                checkType(caseTrue, getType(caseFalse))
+                retType = caseTrue.type
+                
+        se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, retType, cond.line)
 
 def p_ternaryConditiopnal_BoolOp(se):
         'expressionTernaryCond : expressionBoolOp'
@@ -716,19 +782,52 @@ def isNumeric(nType):
         return nType == "float" or nType == "int"
 
 def unifyNumeric(a, b):
+        type1 = getType(a)
+        type2 = getType(b)
+
+        return __unifyNumeric(type1, type2)
+
+def __unifyNumeric(type1, type2):
+        if isNumeric(type1) and isNumeric(type2):
+                if type1 != type2:
+                        return "float"
+                else:
+                        return type1
+        # caso vectores:
+        if isVector(type1) and isVector(type2):
+                if type1[1] == type2[1]:
+                        t = __unifyNumeric(type1[0], type2[0])
+                        if t != None:
+                                return (t, type1[1])
+        return None
+
+"""
+def unifyNumeric(a, b):
         if isNumeric(a.type) and isNumeric(b.type) and a.type != b.type:
                 a.type = b.type = "float"
         # caso vectores:
-        if isTuple(a.type) and isTuple(b.type) and isNumeric(a.type[0]) and isNumeric(b.type[0]) and a.type[0] != b.type[0]:
+        if isVector(a.type) and isVector(b.type) and isNumeric(a.type[0]) and isNumeric(b.type[0]) and a.type[0] != b.type[0]:
                 a.type[0] = b.type[0] = "float"
-
+"""
 
 def checkType(elem, type):
+        error = False
         typeToCheck = elem.type
         if elem.type == 'VAR':
                 typeToCheck = getType(elem)
-        if (type != "vector" and type != "register" and typeToCheck != type) or (type == "vector" and not isTuple(typeToCheck))or (type == "register" and not typeIsRegister(typeToCheck)):
-                raise Exception("Error de tipos: se esperaba %s y se encontro %s" % (type, typeToCheck))
+        if (type != "vector" and type != "register" and typeToCheck != type) or (type == "vector" and not isVector(typeToCheck))or (type == "register" and not typeIsRegister(typeToCheck)):
+                if not registersWithSameFieldsWithSameTypes(typeToCheck, type):
+                        error = True
+        if error:
+                line = -1
+                try:
+                        line = elem.line
+                except:
+                        line = -1
+                if line == -1:
+                        raise Exception("Error de tipos: se esperaba %s y se encontro %s" % (type, typeToCheck))
+                else:
+                        raise ParserException("Error de tipos: se esperaba %s y se encontro %s" % (type, typeToCheck), line)
 
 def typeIsRegister(type):
         return type.__class__.__name__ == "tuple" and type[0] == 'register'
@@ -762,10 +861,33 @@ def regIsVar(reg):
                 return True
         else:
                 if not isMemberAccess(reg):
-                        return False
+                        if not isVectorAt(reg):
+                                return False
+                        else:
+                                if vectorIsVar(reg.vect):
+                                        return True
+                                else:
+                                        return False
                 else:
                         return regIsVar(reg.reg)
-
+def regComesFromVector(reg):
+        if isVectorAt(reg):
+                return True
+        else:
+                if not isMemberAccess(reg):
+                        return False
+                else:
+                        return regComesFromVector(reg)
+        
+def getVectorAtFromReg(reg):
+        if isVectorAt(reg):
+                return reg
+        else:
+                if not isMemberAccess(reg):
+                        raise Exception("El registro no viene de un vector.")
+                else:
+                        return getVectorAtFromReg(reg)
+        
 def isRValue(ex):
         #chequea si es bool, int, float, str, vector, register
         #si no es ninguna entonces no es un RValue

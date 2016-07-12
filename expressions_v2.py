@@ -182,7 +182,7 @@ class VectorNode(Node):
                 self.line = line
                 # el tipo de un vector se representa con una tupla (tipo basico, cantidad de vectores anidados)
                 # por ejemplo, vector<vector<vector<int> > > seria (int, 3)
-                if isTuple(type):
+                if isVector(type):
                         self.type = (type[0], type[1] + 1)
                 else:
                         self.type = (type, 1)
@@ -190,8 +190,8 @@ class VectorNode(Node):
         def evaluate(self, indexLevel, line):
                 return "[%s]" % self.items.evaluate(indexLevel, line)
 
-def isTuple(t):
-        return t.__class__.__name__ == "tuple"
+def isVector(t):
+        return t.__class__.__name__ == "tuple" and t[0] != "register"
 
 
 class VectorItemsNode(Node):
@@ -516,7 +516,7 @@ class RegFieldNode(Node):
                 self.line = line
 
         def evaluate(self, indexLevel, line):
-                return "%s: %s" % (
+                return "%s:%s" % (
                         self.key.evaluate(indexLevel, line),
                         self.value.evaluate(indexLevel, line)
                         )
