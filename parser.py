@@ -6,6 +6,8 @@ from ply.yacc import yacc
 lexer = lex(module=lexer_rules_v2)
 parser = yacc(module=parser_rules_v2)
 text = """
+a=10; b = [a];
+a + b[0];
 #comment inicial
 if (1<2) {
 # un comentario
@@ -68,19 +70,19 @@ b=a+3;
 1+ (a=3);
 
 #esto en c++ anda
-c = 1+2< 5 ? b=2 : b = 4;
+c = 1+2< 5 ? 2 : 4;
 #mas tests con ?:
 if(3 < 2)
 {
 c = 1+2< 5 ?
-b=2 :
-             b = 4;
- if(3 < 2)
+2 :
+              4;
+ # if(3 < 2)
 
-  {
- c = (1+2< 5 ? true : false) ? 2<3 ?
-               b =3 :
-               5+4 : 2>3 ? 3 : b =2;
+ #  {
+ # c = (1+2< 5 ? true : false) ? 2<3 ?
+ #               3 :
+ #               5+4 : 2>3 ? 3 : 2;
  #En cambio lo siguiente no funciona por la forma en que asocia.
  #c = 1+2< 5 ? true : false ? 2<3 ?
  #              b =3 :
@@ -89,9 +91,9 @@ b=2 :
  #En nuestro caso no funciona porque pedi que los tipos devueltos sean del mismo tipo.
  #Esto lo hice asi porque de otra forma no se que tipo tiene que tener la expresion.
 
-a = 3+c+a+2;
+# a = 3+c+a+2;
 
-}
+# }
 }
 vec0 = [1,2];
 
@@ -157,7 +159,7 @@ else c=5;
 
 if(a=true) while(2<3) print("hola");
 else while(3<2) print ("chau");
-if(a=true) colineales([2],[3]); 
+if(a=true) colineales([2],[3]);
 else do
 {colineales([3],[3]);
 print (a);

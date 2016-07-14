@@ -241,6 +241,15 @@ class AssignOperationNode(Node):
 
                 return ret
 
+# class AssignOperationNode2(Node):
+
+#     def __init__(self, right, operator):
+#         self.right = right
+#         self.operator = operator
+#         self.type = "assign2"
+#         # self.type = type
+#         # self.line = line
+
 class CommentNode(Node):
 
 	def __init__(self, comment, code, line):

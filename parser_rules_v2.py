@@ -33,7 +33,7 @@ def setRegMemberType(ex1, type2):
                                 f.type = type2
                                 return
                 raise ParserException("No se encontro un miembro con nombre %s" % ex1.member.value, ex1.line)
-        
+
 def registersWithSameFieldsWithSameTypes(type1, type2):
         error = False
         if typeIsRegister(type1) and typeIsRegister(type2):
@@ -49,7 +49,7 @@ def registersWithSameFieldsWithSameTypes(type1, type2):
                                         error = True
         else:
                 error = True
-                
+
         return not error
 
 def regContainsFielWithSameType(r, field):
@@ -198,9 +198,9 @@ def p_unaryExp_double2(se):
         else:
                 raise ParserException("Error de tipos en operador aritmetico unario doble", ex1.line)
 
-def p_unaryExp2_memberAccess(se):
-        'unaryExp2 : memberAccess'
-        se[0] = se[1]
+# def p_unaryExp2_memberAccess(se):
+#         'unaryExp2 : memberAccess'
+#         se[0] = se[1]
 
 def p_unaryExp2_factor(se):
         'unaryExp2 : factorExp'
@@ -294,7 +294,7 @@ def p_string(se):
 def p_vector(se):
         'expressionVector : LBRACKET vector_items RBRACKET'
         items = se[2]
-        se[0] = VectorNode(items, items.line, items.type)
+        se[0] = VectorNode(items, items.line, getType(items))
 
 def p_vector_items(se):
         'vector_items : expression COMMA vector_items'
@@ -311,7 +311,7 @@ def p_vector_items(se):
 
 def p_vector_single_item(se):
         'vector_items : expression'
-        if se[1].type == 'VAR':
+        if getType(se[1]) == 'undef':
                 raise ParserException("Variable no asignada", se[1].line)
         se[0] = se[1]
 
@@ -355,6 +355,8 @@ def p_vector_at_memberAccess(se):
 #        se[0] = VectorAtNode(vect, index, vect.line, type1)
 
 #asignaciones
+
+
 def p_aoEqual(se):
         'expressionAssign : expressionTernaryCond AOEQUAL expressionAssign'
         ex1 = se[1]
@@ -371,25 +373,25 @@ def p_aoEqual(se):
                 se[0] = minusTimesDivEqual(ex1, ex2, op)
 
 def minusTimesDivEqual(ex1, ex2, op):
-        
+
         checkRValue(ex2)
-        
+
         if not isVar(ex1):
                 raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
 
         var = ex1
-        
+
         type1 = getType(ex1)
         if isVectorAt(ex1):
                 var = getVector(ex1)
-                
+
         type2 = getType(ex2)
-                
+
         resType = type1
         if isNumeric(type1) and isNumeric(type2):
                 if type1 != type2:
                         resType = 'float'
-                        
+
                 if isMemberAccess(ex1):
                         setRegMemberType(ex1, resType)
                 else:
@@ -407,13 +409,13 @@ def plusEqual(ex1, ex2, op):
                 raise ParserException("Lo de la izquierda de una asignacion debe ser una variable o un vector variable",ex1.line)
 
         var = ex1
-        
+
         type1 = getType(ex1)
         if isVectorAt(ex1):
                 var = getVector(ex1)
-                
+
         type2 = getType(ex2)
-                
+
         resType = type1
         if isNumeric(type1) and isNumeric(type2):
                 if type1 != type2:
@@ -449,7 +451,7 @@ def isVar(ex):
                                 return regIsVar(ex)
                         else:
                                 return False
-                
+
 def p_equals(se):
         'expressionAssign : expressionTernaryCond EQUAL expressionAssign'
         ex1 = se[1]
@@ -457,7 +459,7 @@ def p_equals(se):
         op = se[2]
 
         checkRValue(ex2)
-        
+
         #tiene que ser una variable o una varibleVector[index] o un registro.member
         if ex1.type == 'VAR':
                 #variable
@@ -472,9 +474,9 @@ def p_equals(se):
                                 se[0] = regMember_equals(ex1, ex2, op)
                         else:
                                 raise ParserException("En la asignacion se espera una variable o un vector.", ex1.line)
-                
-                
-                
+
+
+
 def var_equals(ex1,ex2,op):
 #        'expressionAssign : factorVar EQUAL expressionAssign'
 #        ex1 = se[1]
@@ -550,12 +552,12 @@ def p_register(se):
         registers[str(node.type[1])] = node
         se[0] = node
 
-def p_memberAccess(se):
-        'memberAccess : memberAccess DOT factorVar'
-        ex1 = se[1]
-        ex2 = se[3]
-        
-        se[0] = memberAccess(ex1, ex2)
+# def p_memberAccess(se):
+#         'memberAccess : memberAccess DOT factorVar'
+#         ex1 = se[1]
+#         ex2 = se[3]
+
+#         se[0] = memberAccess(ex1, ex2)
 
 def p_memberAccess_factorExp(se):
         'memberAccess : factorExp DOT factorVar'
@@ -570,7 +572,7 @@ def memberAccess(ex1, ex2):
 
         if type2 == 'undef':
                 raise ParserException("No se encontro un miembro de dato con nombre %s" % ex2.value, ex2.line)
-        
+
         return MemberAccessNode(ex1, ex2, type2, ex1.line)
 
 def regMember_equals(ex1, ex2, op):
@@ -665,7 +667,7 @@ def p_else_empty(se):
 
 #ternary conditional
 def p_ternaryConditiopnal(se):
-        'expressionTernaryCond : expressionBoolOp QUESTION expression COLON expression'
+        'expressionTernaryCond : expressionTernaryCond QUESTION expressionTernaryCond COLON expressionBoolOp'
         cond = se[1]
         caseTrue = se[3]
         caseFalse = se[5]
@@ -676,8 +678,8 @@ def p_ternaryConditiopnal(se):
                 retType = unified
         else:
                 checkType(caseTrue, getType(caseFalse))
-                retType = caseTrue.type
-                
+                retType = getType(caseTrue)
+
         se[0] = TernaryConditionalNode(cond, caseTrue, caseFalse, retType, cond.line)
 
 def p_ternaryConditiopnal_BoolOp(se):
@@ -878,7 +880,7 @@ def regComesFromVector(reg):
                         return False
                 else:
                         return regComesFromVector(reg)
-        
+
 def getVectorAtFromReg(reg):
         if isVectorAt(reg):
                 return reg
@@ -887,7 +889,7 @@ def getVectorAtFromReg(reg):
                         raise Exception("El registro no viene de un vector.")
                 else:
                         return getVectorAtFromReg(reg)
-        
+
 def isRValue(ex):
         #chequea si es bool, int, float, str, vector, register
         #si no es ninguna entonces no es un RValue
