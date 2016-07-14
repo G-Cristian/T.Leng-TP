@@ -338,7 +338,7 @@ class IfNode(Node):
                 self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
-                return "%sif (%s)%s%s%s" % (
+                return "%sif (%s) %s%s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
                         "\n" if (self.caseTrue.type == 'statement' or self.caseTrue.type == 'comment') else "",
@@ -419,7 +419,7 @@ class DoWhileNode(Node):
                         "\t" * indexLevel,
                         "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
                         self.content.evaluate(indexLevel + 1, line),
-                        "\n\t" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
+                        ("\n" + "\t"*indexLevel) if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.cond.evaluate(indexLevel, line)
                         )
 

@@ -1,1 +1,32 @@
 a = 3;
+if (true)
+	do
+		print("a");
+	while (true);
+if (true) {
+	do
+		print("a");
+	while (true);
+}
+if (false) {
+	do {
+		print("a");
+	} while (true);
+	do { 
+		print("a");
+		print("b");
+	} while (true);
+}
+if (true)
+	if (false)
+		do {
+			print("a");
+		} while (true);
+if (true) {
+	if (false) {
+		do {
+			print("a");
+			print("b");
+		} while (true);
+	}
+}
