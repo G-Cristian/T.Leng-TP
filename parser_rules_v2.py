@@ -1,6 +1,5 @@
 from lexer_rules_v2 import tokens
 from expressions_v2 import *
-import pdb
 
 variables = {
 }
@@ -9,10 +8,10 @@ registers = {
 }
 
 def getType(ex):
-        if ex.type != 'VAR':
-                return ex.type
-        else:
+        if ex.type == 'VAR':
                 return variables.get(ex.value, 'undef')
+        else:
+                return ex.type
 
 def getRegisterMemberType(reg, member):
         type = getType(reg)
@@ -304,7 +303,7 @@ def p_vector_items(se):
         if unified != None:
                 retType = unified
         else:
-                checkType(head, tail.type)
+                checkType(head, getType(tail))
                 retType = getType(head)
 
         se[0] = VectorItemsNode(head, tail, head.line, retType)
@@ -723,7 +722,7 @@ def p_scalarMultiplication_1(se):
         if not isNumeric(getType(ex2)):
                 raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
 
-        se[0] = ScalarMultiplicationNode(ex1, ex2, None, ex1.line)
+        se[0] = ScalarMultiplicationNode(ex1, ex2, None, getType(ex1), ex1.line)
 
 def p_scalarMultiplication_2(se):
         'expressionFunction : MULTIPLICACIONESCALAR LPAREN expression COMMA expression COMMA expression RPAREN'

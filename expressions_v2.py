@@ -424,14 +424,14 @@ class DoWhileNode(Node):
                         )
 
 class ScalarMultiplicationNode(Node):
-        def __init__(self, arg1, arg2, arg3, line):
+        def __init__(self, arg1, arg2, arg3, type, line):
                 self.arg1 = arg1
                 self.arg2 = arg2
                 self.arg3 = arg3
                 if arg3 == "":
                         self.arg3 = None
                 self.line = line
-                self.type = arg1.type
+                self.type = type
 
         def evaluate(self, indexLevel, line):
                 arg3 = ""
