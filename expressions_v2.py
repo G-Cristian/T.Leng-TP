@@ -338,11 +338,12 @@ class IfNode(Node):
                 self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
-                return "%sif (%s) %s%s%s" % (
+                return "%sif (%s)%s%s%s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
-                        "\n" if (self.caseTrue.type == 'statement' or self.caseTrue.type == 'comment') else "",
+                        "\n" if (self.caseTrue.type == 'statement' or self.caseTrue.type == 'comment') else " ",
                         self.caseTrue.evaluate(indexLevel + 1, line),
+                        ("\n" + "\t"*indexLevel) if (self.caseFalse.type == 'else' and (self.caseTrue.type == 'statement' or self.caseTrue.type == 'comment')) else (" " if (self.caseFalse.type == 'else') else ""),
                         self.caseFalse.evaluate(indexLevel, line)
                         )
 
@@ -353,8 +354,7 @@ class ElseNode(Node):
                 self.type = 'else'
 
         def evaluate(self, indexLevel, line):
-                return "\n%selse %s%s" % ("\t"*indexLevel,
-                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                return "else%s%s" % ("\n" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.content.evaluate(indexLevel + 1, line))
 
 class TernaryConditionalNode:
@@ -366,8 +366,7 @@ class TernaryConditionalNode:
                 self.type = type
 
         def evaluate(self, indexLevel, line):
-                return "%s%s ? %s : %s" % (
-                        "\t" * indexLevel,
+                return "%s ? %s : %s" % (
                         self.cond.evaluate(indexLevel, line),
                         self.caseTrue.evaluate(indexLevel, line),
                         self.caseFalse.evaluate(indexLevel, line)
@@ -381,10 +380,10 @@ class WhileNode(Node):
                 self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
-                return "%swhile (%s) %s%s" % (
+                return "%swhile (%s)%s%s" % (
                         "\t" * indexLevel,
                         self.cond.evaluate(indexLevel, line),
-                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.content.evaluate(indexLevel + 1, line)
                         )
 
@@ -398,12 +397,12 @@ class ForNode(Node):
                 self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
-                return "%sfor (%s; %s; %s) %s%s" % (
+                return "%sfor (%s; %s; %s)%s%s" % (
                         "\t" * indexLevel,
                         self.init.evaluate(indexLevel, line),
                         self.cond.evaluate(indexLevel, line),
                         self.post.evaluate(indexLevel, line),
-                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.content.evaluate(indexLevel + 1, line)
                         )
 
@@ -415,9 +414,9 @@ class DoWhileNode(Node):
                 self.type = 'statement'
 
         def evaluate(self, indexLevel, line):
-                return "%sdo %s%s%swhile (%s);" % (
+                return "%sdo%s%s%swhile (%s);" % (
                         "\t" * indexLevel,
-                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else "",
+                        "\n" if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.content.evaluate(indexLevel + 1, line),
                         ("\n" + "\t"*indexLevel) if (self.content.type == 'statement' or self.content.type == 'comment') else " ",
                         self.cond.evaluate(indexLevel, line)

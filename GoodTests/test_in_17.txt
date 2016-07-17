@@ -1,0 +1,46 @@
+if (2 == 3)
+1 + 2;
+else
+if (true) {
+1<2 ? 3 : 4;
+if (false)
+while (1 < 2 ? true : false)
+a = 3;
+else {	a = 2;		if (2 < 3)
+			b = 1;
+		a = 3;
+	b = 2;
+	}	}
+	else { 	a = 2;
+	}
+if (true)	 {
+	a = 3;	v1 = [a];
+	v2[a] = a;
+	if (true) {
+		a = 2;
+	} else
+		b = 1;
+	if (a == b) {
+	if (true)
+			a = 1;
+		else
+			b = 2;
+			a = 3;
+	b = 2;
+	}
+	 a = 3;
+	   b = 2;
+	} 	
+
+else	 {	v1[0]*=2;
+	v2[a]+=b; a = v1[a];
+	b = v2[b];
+	if (true) {
+		a = 2;
+	} else {
+		if (true)
+		b = 1;
+		else
+			b = 2;
+	}
+		}

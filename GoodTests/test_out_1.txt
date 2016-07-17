@@ -12,7 +12,7 @@ if (false) {
 	do {
 		print("a");
 	} while (true);
-	do { 
+	do {
 		print("a");
 		print("b");
 	} while (true);

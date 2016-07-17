@@ -323,7 +323,7 @@ def p_vector_at(se):
                 checkType(vect, "vector")
         except :
                 if type1 != 'undef':
-                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector.", vect.line)
+                        raise ParserException("La parte izquierda debe ser una variable sin definir o un vector. " + str(type1), vect.line)
         checkType(index, "int")
         se[0] = VectorAtNode(vect, index, vect.line, type1)
 
@@ -394,11 +394,14 @@ def minusTimesDivEqual(ex1, ex2, op):
                 if isMemberAccess(ex1):
                         setRegMemberType(ex1, resType)
                 else:
-                        variables[var.value] = resType
+                        if(isVectorAt(ex1)):
+                                return vector_equals(ex1,ex2,op)
+                        else:
+                                variables[var.value] = resType
 
                 return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
-                raise ParserException("No se puede restar elementos no numericos",ex1.line)
+                raise ParserException("No se puede restar, multiplicar ni dividir elementos no numericos",ex1.line)
 
 def plusEqual(ex1, ex2, op):
 
@@ -423,7 +426,10 @@ def plusEqual(ex1, ex2, op):
                 if isMemberAccess(ex1):
                         setRegMemberType(ex1, resType)
                 else:
-                        variables[var.value] = resType
+                        if(isVectorAt(ex1)):
+                                return vector_equals(ex1,ex2,op)
+                        else:
+                                variables[var.value] = resType
 
                 return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
@@ -432,7 +438,10 @@ def plusEqual(ex1, ex2, op):
                         if isMemberAccess(ex1):
                                 setRegMemberType(ex1, resType)
                         else:
-                                variables[var.value] = resType
+                                if(isVectorAt(ex1)):
+                                        return vector_equals(ex1,ex2,op)
+                                else:
+                                        variables[var.value] = resType
 
                         return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
                 else:
@@ -511,16 +520,27 @@ def vector_equals(ex1,ex2,op):
                         try:
                                 checkType(ex1, type2)
                         except:
-                                sameType = False
+                                unified = unifyNumeric(ex1, ex2)
+                                if unified == None:
+                                        sameType = False
                         if type1 == 'undef' or sameType:
                                 newType = 'undef'
                                 currentVectorLevel = 0
                                 #si es un vector el type2
                                 if isVector(type2):
-                                        newType = type2[0]
+                                        unified = unifyNumeric(ex1,ex2)
+                                        if unified == None:
+                                                newType = type2[0]
+                                        else:
+                                                newType = unified[0]
+                                                
                                         currentVectorLevel = type2[1]
                                 else:
-                                        newType = type2
+                                        unified = unifyNumeric(ex1,ex2)
+                                        if unified == None:
+                                                newType = type2
+                                        else:
+                                                newType = unified
 
                                 currentVectorLevel1 = 0
                                 typeOfVector = getType(vect)
@@ -737,7 +757,7 @@ def p_scalarMultiplication_2(se):
                 raise ParserException("Se esperaba tipo numerico en el segundo parametro de multiplicacionEscalar",ex2.line)
 
         checkType(ex3, "bool")
-        se[0] = ScalarMultiplicationNode(ex1, ex2, ex3, ex1.line)
+        se[0] = ScalarMultiplicationNode(ex1, ex2, ex3, getType(ex1), ex1.line)
 
 def p_capitalize(se):
         'expressionFunction : CAPITALIZAR LPAREN expression RPAREN'
@@ -764,6 +784,10 @@ def p_collinear(se):
 def p_print(se):
         'expressionFunction : PRINT LPAREN expression RPAREN'
         ex1 = se[3]
+        
+        if getType(ex1) == 'undef':
+                raise ParserException("variable no asignada.", ex1.line)
+        
         se[0] = PrintNode(ex1, ex1.line)
 
 def p_length(se):
