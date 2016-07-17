@@ -6,6 +6,16 @@ from ply.yacc import yacc
 lexer = lex(module=lexer_rules_v2)
 parser = yacc(module=parser_rules_v2)
 text = """
+a = {a:1,b:2};
+a.a*=2;
+a.b = 1.2;
+a.b+=2;
+v[0]=a;
+v[0].a+=2;
+#no tiene que andar
+#v[0].a*=2.8;
+a.a = "a";
+a.a += "b";
 g =[1];
 g[1]/=2;
 g[4]++;

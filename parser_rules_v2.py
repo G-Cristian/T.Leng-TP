@@ -392,14 +392,14 @@ def minusTimesDivEqual(ex1, ex2, op):
                         resType = 'float'
 
                 if isMemberAccess(ex1):
-                        setRegMemberType(ex1, resType)
+                        return regMember_equals(ex1, ex2, op)
                 else:
                         if(isVectorAt(ex1)):
                                 return vector_equals(ex1,ex2,op)
                         else:
-                                variables[var.value] = resType
+                                return var_equals(ex1,ex2,op)
 
-                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+#                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 raise ParserException("No se puede restar, multiplicar ni dividir elementos no numericos",ex1.line)
 
@@ -424,26 +424,26 @@ def plusEqual(ex1, ex2, op):
                         resType = 'float'
 
                 if isMemberAccess(ex1):
-                        setRegMemberType(ex1, resType)
+                        return regMember_equals(ex1, ex2, op)
                 else:
                         if(isVectorAt(ex1)):
                                 return vector_equals(ex1,ex2,op)
                         else:
-                                variables[var.value] = resType
+                                return var_equals(ex1,ex2,op)
 
-                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                #return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 if type1 == 'str' and type2 == 'str':
                         resType = 'str'
                         if isMemberAccess(ex1):
-                                setRegMemberType(ex1, resType)
+                                return regMember_equals(ex1, ex2, op)
                         else:
                                 if(isVectorAt(ex1)):
                                         return vector_equals(ex1,ex2,op)
                                 else:
-                                        variables[var.value] = resType
+                                        return var_equals(ex1,ex2,op)
 
-                        return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
+                 #       return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
                 else:
                         raise ParserException("No se puede sumar elementos no numericos ni strings",ex1.line)
 
@@ -493,9 +493,14 @@ def var_equals(ex1,ex2,op):
 
         type2 = getType(ex2)
         if type2 != 'undef':
-                variables[ex1.value] = type2
+                resType = type2
+                unified = unifyNumeric(ex1,ex2)
+                if unified != None:
+                        resType = unified
+                
+                variables[ex1.value] = resType
  #               se[0] = AssignOperationNode(ex1, ex2, op, type2, ex1.line)
-                return AssignOperationNode(ex1, ex2, op, type2, ex1.line)
+                return AssignOperationNode(ex1, ex2, op, resType, ex1.line)
         else:
                 raise ParserException("No se puede asignar una variable sin tipo",ex1.line)
 
@@ -607,7 +612,10 @@ def regMember_equals(ex1, ex2, op):
                                 try:
                                         checkType(ex1, type2)
                                 except:
-                                        sameType = False
+                                        #si a la izquieda hay un float y a la derecha un int todo bien
+                                        #sino error
+                                        if not isNumeric(getType(ex1)) or type2 != 'int':
+                                                sameType = False
 
                                 if sameType:
                                         setRegMemberType(ex1, type2)
