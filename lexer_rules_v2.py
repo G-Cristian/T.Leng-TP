@@ -1,4 +1,4 @@
-# import pdb
+import pdb
 tokens = [
     # aritmeticos
     'AO',
@@ -68,7 +68,7 @@ t_COLON = ":"
 t_SEMICOLON = ";"
 t_QUESTION = "\?"
 
-reserved = {
+keywords = {
     'if' : 'IF',
     'then' : 'THEN',
     'else' : 'ELSE',
@@ -84,6 +84,8 @@ reserved = {
     'AND' : 'BOOL_OP',
     'NOT' : 'NOT'
 }
+
+reserved = {'begin', 'end', 'while', 'for', 'if', 'else', 'do', 'res', 'return', 'true', 'false', 'and', 'or', 'not'}
 
 types = set(['int', 'float'])
 
@@ -115,7 +117,9 @@ def t_STRING(token):
 
 def t_VAR(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value,'VAR')    # Check for reserved words
+    if (t.value.lower() in reserved and not (t.value in keywords.keys())):
+        raise Exception("Palabra reservada '%s' en linea %d" % (t.value, t.lexer.lineno))
+    t.type = keywords.get(t.value,'VAR')    # Check for reserved words
 
     if t.type == 'VAR':
         t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}

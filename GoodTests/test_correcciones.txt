@@ -5,3 +5,5 @@ a=10;b=[a];
 a= "a" + "b";
 a=[1]; length(multiplicacionEscalar(a,1));
 G = [1.2, 2.5]; G[0] = 3;
+begin=2;
+IF = 1;
