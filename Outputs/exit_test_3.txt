@@ -1,2 +1,0 @@
-vec1[0] = 2;
-vec2[0] = {nombre:"Juan"};

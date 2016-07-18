@@ -269,7 +269,7 @@ class CodeNode(Node):
                 else:
                         evalCode = self.code.evaluate(indexLevel, self.line)
                 return  "%s%s%s" % (self.statement.evaluate(indexLevel, self.line),
-                        " " if hasComment else "\n",
+                        " " if hasComment else ("\n" if (self.code.type != 'empty') else ""),
                         evalCode)
 
 
@@ -295,7 +295,7 @@ class BlockNode(Node):
         def evaluate(self, indexLevel, line):
                 ret = "{\n%s%s}" % (
                         self.code.evaluate(indexLevel, self.line),
-                        "\t" * (indexLevel - 1))
+                        ("\n" + "\t" * (indexLevel - 1)))
 
                 return ret
 

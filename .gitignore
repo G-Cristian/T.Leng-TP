@@ -1,3 +1,6 @@
 *.pyc
 *.out
 parsetab.*
+ExecParser.cmd
+parsetab.py
+Outputs/
