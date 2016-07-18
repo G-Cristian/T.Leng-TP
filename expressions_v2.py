@@ -21,12 +21,7 @@ class VarNode(Node):
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                # for x in range(0, indexLevel):
-                #         res += "\t"
-                ret += str(self.value)
-
-                return ret
+                return str(self.value)
 
 class NumberNode(Node):
 
@@ -36,12 +31,7 @@ class NumberNode(Node):
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                # for x in range(0, indexLevel):
-                #         res += "\t"
-                ret += str(self.value)
-
-                return ret
+                return str(self.value)
 
 class UnaryOperationNode(Node):
 
@@ -54,7 +44,6 @@ class UnaryOperationNode(Node):
 
         def evaluate(self, indexLevel, line):
                 ret = ""
-                # ret = "\t" * indexLevel
                 if self.leftOp:
                         ret += self.operator
                         ret += self.right.evaluate(0, self.line)
@@ -75,15 +64,10 @@ class BinaryOperationNode(Node):
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                # for x in range(0, indexLevel):
-                #         ret += "\t"
-                ret += self.left.evaluate(0, self.line)
-                ret += " " + self.operator + " "
-                ret += self.right.evaluate(0, self.line)
-
-                return ret
-
+                return "%s %s %s" % (
+                    self.left.evaluate(0, self.line),
+                    self.operator,
+                    self.right.evaluate(0, self.line))
 class ParenOperationNode(Node):
 
 	def __init__(self, value, nType, line):
@@ -93,12 +77,6 @@ class ParenOperationNode(Node):
 
 	def evaluate(self, indexLevel, line):
                 return "(%s)" % self.value.evaluate(0, self.line)
-                # ret = "\t" * indexLevel
-                # ret += "("
-                # ret += self.value.evaluate(0, self.line)
-                # ret += ")"
-
-                # return ret
 
 class BooleanNode(Node):
         def __init__(self, value, line):
@@ -149,7 +127,6 @@ class BooleanCompNode(Node):
                 self.type = 'bool'
 
         def evaluate(self, indexLevel, line):
-                # pdb.set_trace()
                 return (self.exp1.evaluate(indexLevel, line) +
                        " " + self.op + " " +
                        self.exp2.evaluate(indexLevel, line))
@@ -232,14 +209,9 @@ class AssignOperationNode(Node):
 		self.line = line
 
 	def evaluate(self, indexLevel, line):
-                ret = ""
-                # for x in range(0, indexLevel):
-                #         ret += "\t"
-                ret += self.left.evaluate(0, self.line)
-                ret += " " + self.operator + " "
-                ret += self.right.evaluate(0, self.line)
-
-                return ret
+                return "%s %s %s" % (self.left.evaluate(0, self.line),
+                        self.operator,
+                        self.right.evaluate(0, self.line))
 
 # class AssignOperationNode2(Node):
 
@@ -263,8 +235,6 @@ class CommentNode(Node):
                         "" if hasComment else "\t" * indexLevel,
                         self.comment,
                         self.code.evaluate(indexLevel, line))
-
-                # pdb.set_trace()
                 return ret
 
 # class InitialCodeNode(Node):

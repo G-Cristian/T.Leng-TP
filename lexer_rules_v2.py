@@ -119,7 +119,7 @@ def t_VAR(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     if (t.value.lower() in reserved and not (t.value in keywords.keys())):
         raise Exception("Palabra reservada '%s' en linea %d" % (t.value, t.lexer.lineno))
-    t.type = keywords.get(t.value,'VAR')    # Check for reserved words
+    t.type = keywords.get(t.value,'VAR')
 
     if t.type == 'VAR':
         t.value = {"value": t.value, "type": t.type, "line":t.lexer.lineno}
